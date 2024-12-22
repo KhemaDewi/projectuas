@@ -1,0 +1,145 @@
+<div class="container mt-4">
+  <h2>Data Murid</h2>
+
+  <!-- Loader -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahMuridModal"
+  >
+    Tambah Murid
+  </button>
+
+  <!-- Modal Tambah Fakultas -->
+  <div
+    class="modal fade"
+    id="tambahMuridModal"
+    tabindex="-1"
+    aria-labelledby="tambahMuridLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahMuridModalLabel">
+            Tambah Murid
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="muridForm" (ngSubmit)="addMurid()">
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama</label>
+              <input
+                id="nama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="alamat" class="form-label">Alamat</label>
+              <input
+                id="alamat"
+                type="text"
+                class="form-control"
+                formControlName="alamat"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="kelas" class="form-label">Kelas</label>
+              <input
+                id="kelas"
+                type="text"
+                class="form-control"
+                formControlName="kelas"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="no_hp" class="form-label">No Telepon</label>
+              <input
+                id="no_hp"
+                type="text"
+                class="form-control"
+                formControlName="no_hp"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="no_hpOrtu" class="form-label">No Telepon Orang Tua</label>
+              <input
+                id="no_hpOrtu"
+                type="text"
+                class="form-control"
+                formControlName="no_hpOrtu"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="asal_sekolah" class="form-label">Asal Sekolah</label>
+              <input
+                id="asal_sekolah"
+                type="text"
+                class="form-control"
+                formControlName="asal_sekolah"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
+              <input
+                id="jenisbimbel"
+                type="text"
+                class="form-control"
+                formControlName="jenisbimbel"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Murid" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Fakultas -->
+  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Alamat</th>
+        <th>Kelas</th>
+        <th>No Telepon</th>
+        <th>No Telepon Orang Tua</th>
+        <th>Asal Sekolah</th>
+        <th>Jenis Bimbel</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of murid">
+        <td>{{ item.nama }}</td>
+        <td>{{ item.alamat }}</td>
+        <td>{{ item.kelas }}</td>
+        <td>{{ item.no_hp }}</td>
+        <td>{{ item.no_hpOrtu }}</td>
+        <td>{{ item.asal_sekolah }}</td>
+        <td>{{ item.jenisbimbel }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,124 @@
+<div class="container mt-4">
+  <h2>Jadwal</h2>
+
+  <!-- Loader -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahJadwalModal"
+  >
+    Tambah Jadwal
+  </button>
+
+  <!-- Modal Tambah Fakultas -->
+  <div
+    class="modal fade"
+    id="tambahJadwalModal"
+    tabindex="-1"
+    aria-labelledby="tambahJadwalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahJadwalModalLabel">
+            Tambah Jadwal
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="jadwalForm" (ngSubmit)="addJadwal()">
+            <div class="mb-3">
+              <label for="hari" class="form-label">Hari</label>
+              <input
+                id="hari"
+                type="text"
+                class="form-control"
+                formControlName="hari"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="jam" class="form-label">Jam</label>
+              <input
+                id="jam"
+                type="text"
+                class="form-control"
+                formControlName="jam"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
+              <input
+                id="jenisbimbel"
+                type="text"
+                class="form-control"
+                formControlName="jenisbimbel"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="ruangkelas" class="form-label">Ruang Kelas </label>
+              <input
+                id="ruangkelas"
+                type="text"
+                class="form-control"
+                formControlName="ruangkelas"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="namaguru" class="form-label">Nama Guru </label>
+              <input
+                id="namaguru"
+                type="text"
+                class="form-control"
+                formControlName="namaguru"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Jadwal" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Fakultas -->
+  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Hari</th>
+        <th>Jam</th>
+        <th>Jenis Bimbel</th>
+        <th>Ruang Kelas</th>
+        <th>Nama Guru</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of jadwal">
+        <td>{{ item.hari }}</td>
+        <td>{{ item.jam }}</td>
+        <td>{{ item.jenisbimbel }}</td>
+        <td>{{ item.ruangkelas }}</td>
+        <td>{{ item.guru }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

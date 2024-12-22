@@ -1,0 +1,101 @@
+<div class="container mt-4">
+  <h2>Jenis Bimbel</h2>
+
+  <!-- Loader -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahJenisbimbelModal"
+  >
+    Tambah Jenis Bimbel
+  </button>
+
+  <!-- Modal Tambah Fakultas -->
+  <div
+    class="modal fade"
+    id="tambahJenisbimbelModal"
+    tabindex="-1"
+    aria-labelledby="tambahJenisbimbelModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahJenisbimbelModalLabel">
+            Tambah Jenis Bimbel
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="jenisbimbelForm" (ngSubmit)="addJenisbimbel()">
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Bimbel</label>
+              <input
+                id="nama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="singkatan" class="form-label">Singkatan</label>
+              <input
+                id="singkatan"
+                type="text"
+                class="form-control"
+                formControlName="singkatan"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="harga" class="form-label">Harga</label>
+              <input
+                id="harga"
+                type="text"
+                class="form-control"
+                formControlName="harga"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Jenis Bimbel" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Fakultas -->
+  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Singkatan</th>
+        <th>Harga</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of jenisbimbel">
+        <td>{{ item.nama }}</td>
+        <td>{{ item.singkatan }}</td>
+        <td>{{ item.harga }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
