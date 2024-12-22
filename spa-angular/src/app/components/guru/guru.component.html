@@ -42,12 +42,12 @@
         <div class="modal-body">
           <form [formGroup]="guruForm" (ngSubmit)="addGuru()">
             <div class="mb-3">
-              <label for="namaguru" class="form-label">Nama Guru</label>
+              <label for="nama" class="form-label">Nama Guru</label>
               <input
-                id="namaguru"
+                id="nama"
                 type="text"
                 class="form-control"
-                formControlName="namaguru"
+                formControlName="nama"
               />
             </div>
             <div class="mb-3">
@@ -68,14 +68,21 @@
                 formControlName="no_hp"
               />
             </div>
+
             <div class="mb-3">
+              <!-- Dropdown untuk memilih fakultas -->
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
-              <input
+              <select
                 id="jenisbimbel"
-                type="text"
-                class="form-control"
-                formControlName="jenisbimbel"
-              />
+                class="form-select"
+                formControlName="jenisbimbel_id">
+            <option
+                  *ngFor="let jenisbimbel of jenisbimbel"
+                  [value]="jenisbimbel._id"
+                >
+                  {{ jenisbimbel.nama }}
+                </option>
+              </select>
             </div>
 
             <button
@@ -99,7 +106,7 @@
       <tr>
         <!-- Header tabel -->
         <th>#</th> <!-- Nomor urut -->
-        <th>Nama Guru</th> <!-- Nama fakultas -->
+        <th>Nama</th> <!-- Nama fakultas -->
         <th>Alamat</th> <!-- Singkatan nama fakultas -->
         <th>No Telepon</th> <!-- Singkatan nama fakultas -->
         <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
@@ -120,7 +127,7 @@
         <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.no_hp }}</td>
         <!-- Menampilkan singkatan fakultas -->
-        <td>{{ item.jenisbimbel }}</td>
+        <td>{{ item.jenisbimbel_id?.nama }}</td>
       </tr>
     </tbody>
   </table>

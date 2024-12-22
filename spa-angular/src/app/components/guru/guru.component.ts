@@ -14,10 +14,12 @@ import { NgxPaginationModule } from 'ngx-pagination'; // Impor modul ngx-paginat
 })
 export class GuruComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   guru: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
+  jenisbimbel: any[] = []; // Menyimpan data fakultas untuk dropdown.
   currentPage = 1;
   itemsPerPage = 7;
 
   apiUrl = 'https://bimbel-app.vercel.app/api/guru';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apijenisbimbelUrl = 'https://crud-express-seven.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   guruForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -33,12 +35,13 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
       nama: [''],
       alamat: [''],
       no_hp:[''],
-      jenisbimbel:['']
+      jenisbimbel:[null]
     });
   }
 
   ngOnInit(): void {  // Lifecycle hook ngOnInit dipanggil saat komponen diinisialisasi
     this.getGuru();  // Memanggil method getFakultas saat komponen diinisialisasi
+    this.getJenisbimbel();
   }
 
   getGuru(): void {  // Method untuk mengambil data fakultas dari API
@@ -52,6 +55,18 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
       error: (err) => {  // Callback untuk menangani jika terjadi error saat mengambil data
         console.error('Error fetching guru data:', err);  // Mencetak error di console untuk debugging
         this.isLoading = false;  // Tetap mengubah status loading menjadi false meskipun terjadi error, untuk menghentikan loader
+      },
+    });
+  }
+
+   // Mengambil data fakultas untuk dropdown
+   getJenisbimbel(): void {
+    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+      next: (data) => { // Callback jika request berhasil.
+        this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
+      },
+      error: (err) => { // Callback jika request gagal.
+        console.error('Error fetching jenis bimbel data:', err); // Log error ke konsol.
       },
     });
   }

@@ -42,7 +42,7 @@
         <div class="modal-body">
           <form [formGroup]="muridForm" (ngSubmit)="addMurid()">
             <div class="mb-3">
-              <label for="nama" class="form-label">Nama</label>
+              <label for="nama" class="form-label">Nama Murid</label>
               <input
                 id="nama"
                 type="text"
@@ -77,6 +77,7 @@
                 formControlName="no_hp"
               />
             </div>
+
             <div class="mb-3">
               <label for="no_hpOrtu" class="form-label">No Telepon Orang Tua</label>
               <input
@@ -96,14 +97,21 @@
               />
             </div>
             <div class="mb-3">
+              <!-- Dropdown untuk memilih fakultas -->
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
-              <input
+              <select
                 id="jenisbimbel"
-                type="text"
-                class="form-control"
-                formControlName="jenisbimbel"
-              />
+                class="form-select"
+                formControlName="jenisbimbel_id">
+            <option
+                  *ngFor="let jenisbimbel of jenisbimbel"
+                  [value]="jenisbimbel._id"
+                >
+                  {{ jenisbimbel.singkatan }}
+                </option>
+              </select>
             </div>
+
             <button
               type="submit"
               class="btn btn-primary"
@@ -117,29 +125,54 @@
     </div>
   </div>
 
-  <!-- Data Fakultas -->
-  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+  <!-- Jika data fakultas tersedia, tampilkan tabel -->
+<div *ngIf="murid.length > 0">
+  <!-- Membuat tabel untuk menampilkan data fakultas -->
+  <table class="table">
     <thead>
       <tr>
-        <th>Nama</th>
-        <th>Alamat</th>
-        <th>Kelas</th>
-        <th>No Telepon</th>
-        <th>No Telepon Orang Tua</th>
-        <th>Asal Sekolah</th>
-        <th>Jenis Bimbel</th>
+        <!-- Header tabel -->
+        <th>#</th> <!-- Nomor urut -->
+        <th>Nama</th> <!-- Nama fakultas -->
+        <th>Alamat</th> <!-- Singkatan nama fakultas -->
+        <th>Kelas</th> <!-- Singkatan nama fakultas -->
+        <th>No Telepon</th> <!-- Singkatan nama fakultas -->
+        <th>No Telepon Orang Tua</th> <!-- Singkatan nama fakultas -->
+        <th>Asal Sekolah</th> <!-- Singkatan nama fakultas -->
+        <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of murid">
+      <!-- Looping data fakultas menggunakan directive *ngFor -->
+      <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
+      <tr
+        *ngFor="let item of murid | paginate: { itemsPerPage: 7, currentPage: currentPage }; index as i"
+      >
+        <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
+        <td>{{ (currentPage - 1) * 7 + i + 1 }}</td>
+        <!-- Menampilkan nama fakultas -->
         <td>{{ item.nama }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.alamat }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.kelas }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.no_hp }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.no_hpOrtu }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.asal_sekolah }}</td>
-        <td>{{ item.jenisbimbel }}</td>
+        <!-- Menampilkan singkatan fakultas -->
+        <td>{{ item.jenisbimbel_id?.singkatan }}</td>
       </tr>
     </tbody>
   </table>
+
+  <!-- Kontrol Pagination -->
+  <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
+  <!-- Ketika halaman berubah, properti currentPage diperbarui -->
+  <pagination-controls (pageChange)="currentPage = $event">
+  </pagination-controls>
 </div>
+
+

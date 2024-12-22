@@ -13,7 +13,7 @@ import * as bootstrap from 'bootstrap';
 })
 export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   jenisbimbel: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  apiUrl = 'https://bimbel-app.vercel.app/api/jenisbimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   jenisbimbelForm: FormGroup;  // Tambahkan untuk mengelola data formulir

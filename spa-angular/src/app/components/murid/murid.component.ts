@@ -3,17 +3,23 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination'; // Impor modul ngx-pagination
 
 @Component({
   selector: 'app-murid',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './murid.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './murid.component.css'  // Path ke file CSS untuk komponen ini
 })
 export class MuridComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   murid: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
+  jenisbimbel: any[] = []; // Menyimpan data fakultas untuk dropdown.
+  currentPage = 1;
+  itemsPerPage = 7;
+
   apiUrl = 'https://bimbel-app.vercel.app/api/murid';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apijenisbimbelUrl = 'https://crud-express-seven.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   muridForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -28,16 +34,17 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
     this.muridForm = this.fb.group({
       nama: [''],
       alamat: [''],
-      kelas:[''],
+      kelas: [''],
       no_hp:[''],
-      no_hpOrtu:[''],
-      asal_sekolah:[''],
-      jenisbimbel:['']
+      no_hpOrtu: [''],
+      asal_sekolah: [''],
+      jenisbimbel:['null']
     });
   }
 
   ngOnInit(): void {  // Lifecycle hook ngOnInit dipanggil saat komponen diinisialisasi
     this.getMurid();  // Memanggil method getFakultas saat komponen diinisialisasi
+    this.getJenisbimbel();
   }
 
   getMurid(): void {  // Method untuk mengambil data fakultas dari API
@@ -51,6 +58,18 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
       error: (err) => {  // Callback untuk menangani jika terjadi error saat mengambil data
         console.error('Error fetching murid data:', err);  // Mencetak error di console untuk debugging
         this.isLoading = false;  // Tetap mengubah status loading menjadi false meskipun terjadi error, untuk menghentikan loader
+      },
+    });
+  }
+
+   // Mengambil data fakultas untuk dropdown
+   getJenisbimbel(): void {
+    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+      next: (data) => { // Callback jika request berhasil.
+        this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
+      },
+      error: (err) => { // Callback jika request gagal.
+        console.error('Error fetching jenis bimbel data:', err); // Log error ke konsol.
       },
     });
   }
