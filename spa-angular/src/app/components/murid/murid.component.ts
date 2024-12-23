@@ -19,7 +19,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   itemsPerPage = 7;
 
   apiUrl = 'https://bimbel-app.vercel.app/api/murid';  // URL API yang digunakan untuk mendapatkan data fakultas
-  apijenisbimbelUrl = 'https://crud-express-seven.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
+  apijenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';// URL API untuk mengambil data fakultas.
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   muridForm: FormGroup;  // Tambahkan untuk mengelola data formulir

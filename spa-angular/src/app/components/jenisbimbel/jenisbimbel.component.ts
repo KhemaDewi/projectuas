@@ -13,7 +13,7 @@ import * as bootstrap from 'bootstrap';
 })
 export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   jenisbimbel: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  apiUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiJenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   jenisbimbelForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -38,7 +38,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 
   getJenisbimbel(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    this.http.get<any[]>(this.apiJenisbimbelUrl).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jenisbimbel = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jenis Bimbel:', this.jenisbimbel);  // Mencetak data fakultas di console untuk debugging
@@ -55,7 +55,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   addJenisbimbel(): void {
     if (this.jenisbimbelForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.jenisbimbelForm.value).subscribe({
+      this.http.post(this.apiJenisbimbelUrl, this.jenisbimbelForm.value).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getJenisbimbel();  // Refresh data fakultas

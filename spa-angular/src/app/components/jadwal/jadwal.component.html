@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2>Jadwal</h2>
+  <h2>Jadwal Bimbel</h2>
 
   <!-- Loader -->
   <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
@@ -42,15 +42,6 @@
         <div class="modal-body">
           <form [formGroup]="jadwalForm" (ngSubmit)="addJadwal()">
             <div class="mb-3">
-              <label for="hari" class="form-label">Hari</label>
-              <input
-                id="hari"
-                type="text"
-                class="form-control"
-                formControlName="hari"
-              />
-            </div>
-            <div class="mb-3">
               <label for="jam" class="form-label">Jam</label>
               <input
                 id="jam"
@@ -60,16 +51,31 @@
               />
             </div>
             <div class="mb-3">
-              <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
+              <label for="hari" class="form-label">Hari</label>
               <input
-                id="jenisbimbel"
+                id="hari"
                 type="text"
                 class="form-control"
-                formControlName="jenisbimbel"
+                formControlName="hari"
               />
             </div>
             <div class="mb-3">
-              <label for="ruangkelas" class="form-label">Ruang Kelas </label>
+              <!-- Dropdown untuk memilih fakultas -->
+              <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
+              <select
+                id="jenisbimbel"
+                class="form-select"
+                formControlName="jenisbimbel_id">
+            <option
+                  *ngFor="let jenisbimbel of jenisbimbel"
+                  [value]="jenisbimbel._id"
+                >
+                  {{ jenisbimbel.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="ruangkelas" class="form-label">Ruang Kelas</label>
               <input
                 id="ruangkelas"
                 type="text"
@@ -78,13 +84,19 @@
               />
             </div>
             <div class="mb-3">
-              <label for="namaguru" class="form-label">Nama Guru </label>
-              <input
-                id="namaguru"
-                type="text"
-                class="form-control"
-                formControlName="namaguru"
-              />
+              <!-- Dropdown untuk memilih Guru -->
+              <label for="guru" class="form-label">Nama Guru</label>
+              <select
+                id="guru"
+                class="form-select"
+                formControlName="guru_id">
+            <option
+                  *ngFor="let guru of guru"
+                  [value]="guru._id"
+                >
+                  {{ guru.nama }}
+                </option>
+              </select>
             </div>
 
             <button
@@ -100,25 +112,49 @@
     </div>
   </div>
 
-  <!-- Data Fakultas -->
-  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+  <!-- Jika data fakultas tersedia, tampilkan tabel -->
+<div *ngIf="jadwal.length > 0">
+  <!-- Membuat tabel untuk menampilkan data fakultas -->
+  <table class="table">
     <thead>
       <tr>
-        <th>Hari</th>
-        <th>Jam</th>
-        <th>Jenis Bimbel</th>
-        <th>Ruang Kelas</th>
-        <th>Nama Guru</th>
+        <!-- Header tabel -->
+        <th>No</th> <!-- Nomor urut -->
+        <th>Jam</th> <!-- Jam Bimbel -->
+        <th>Hari</th> <!-- Hari bimbel -->
+        <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
+        <th>Ruang Kelas</th> <!-- Singkatan nama fakultas -->
+        <th>Nama Guru</th> <!-- Singkatan nama fakultas -->
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of jadwal">
-        <td>{{ item.hari }}</td>
+      <!-- Looping data fakultas menggunakan directive *ngFor -->
+      <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
+      <tr
+        *ngFor="let item of jadwal | paginate: { itemsPerPage: 7, currentPage: currentPage }; index as i"
+      >
+        <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
+        <td>{{ (currentPage - 1) * 7 + i + 1 }}</td>
+        <!-- Menampilkan nama fakultas -->
         <td>{{ item.jam }}</td>
-        <td>{{ item.jenisbimbel }}</td>
+        <!-- Menampilkan singkatan fakultas -->
+        <td>{{ item.hari }}</td>
+        <!-- Menampilkan singkatan fakultas -->
+        <td>{{ item.jenisbimbel_id?.nama }}</td>
+        <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.ruangkelas }}</td>
-        <td>{{ item.guru }}</td>
+        <!-- Menampilkan singkatan fakultas -->
+        <td>{{ item.guru_id?.nama }}</td>
+        
       </tr>
     </tbody>
   </table>
+
+  <!-- Kontrol Pagination -->
+  <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
+  <!-- Ketika halaman berubah, properti currentPage diperbarui -->
+  <pagination-controls (pageChange)="currentPage = $event">
+  </pagination-controls>
 </div>
+
+

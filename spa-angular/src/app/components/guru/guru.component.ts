@@ -18,8 +18,8 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
   currentPage = 1;
   itemsPerPage = 7;
 
-  apiUrl = 'https://bimbel-app.vercel.app/api/guru';  // URL API yang digunakan untuk mendapatkan data fakultas
-  apijenisbimbelUrl = 'https://crud-express-seven.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
+  apiGuruUrl = 'https://bimbel-app.vercel.app/api/guru';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiJenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   guruForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -46,7 +46,7 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
 
   getGuru(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    this.http.get<any[]>(this.apiGuruUrl).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.guru = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Guru:', this.guru);  // Mencetak data fakultas di console untuk debugging
@@ -61,7 +61,7 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
 
    // Mengambil data fakultas untuk dropdown
    getJenisbimbel(): void {
-    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+    this.http.get<any[]>(this.apiJenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
       },
@@ -75,7 +75,7 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
   addGuru(): void {
     if (this.guruForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.guruForm.value).subscribe({
+      this.http.post(this.apiGuruUrl, this.guruForm.value).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getGuru();  // Refresh data fakultas
