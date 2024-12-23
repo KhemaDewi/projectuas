@@ -19,9 +19,8 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   itemsPerPage = 7;
 
   apiUrl = 'https://bimbel-app.vercel.app/api/murid';  // URL API yang digunakan untuk mendapatkan data fakultas
-  apijenisbimbelUrl = 'https://crud-express-seven.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
+  apijenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data fakultas.
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
-
   muridForm: FormGroup;  // Tambahkan untuk mengelola data formulir
   isSubmitting = false;  // Status untuk mencegah double submit
 
@@ -35,10 +34,11 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
       nama: [''],
       alamat: [''],
       kelas: [''],
-      no_hp:[''],
+      no_hp: [''],
       no_hpOrtu: [''],
       asal_sekolah: [''],
-      jenisbimbel_id:[null]
+      jenisbimbel_id: [null],
+      jenisbimbel: [null]
     });
   }
 
@@ -62,8 +62,8 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
     });
   }
 
-   // Mengambil data fakultas untuk dropdown
-   getJenisbimbel(): void {
+  // Mengambil data fakultas untuk dropdown
+  getJenisbimbel(): void {
     this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
