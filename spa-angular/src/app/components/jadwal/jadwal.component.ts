@@ -28,9 +28,9 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.jadwalForm = this.fb.group({
       hari: [''],
       jam: [''],
-      jenisbimbel:[''],
+      jenisbimbel_id:[''],
       ruangkelas:[''],
-      namaguru:['']
+      guru_id:['']
     });
   }
 

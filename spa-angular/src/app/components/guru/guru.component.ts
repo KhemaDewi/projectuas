@@ -35,7 +35,7 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
       nama: [''],
       alamat: [''],
       no_hp:[''],
-      jenisbimbel:[null]
+      jenisbimbel_id:[null]
     });
   }
 

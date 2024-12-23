@@ -5,7 +5,7 @@ import { JenisbimbelComponent } from './components/jenisbimbel/jenisbimbel.compo
 import { GuruComponent } from './components/guru/guru.component';
 
 export const routes: Routes = [
-    { path: '', component: JadwalComponent },
+    { path: 'jadwal', component: JadwalComponent },
     { path: 'murid', component: MuridComponent },
     { path: 'jenisbimbel', component: JenisbimbelComponent },
     { path: 'guru', component: GuruComponent }

@@ -1,20 +1,67 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">SPA Angular</a>
+  <a class="navbar-brand" href="#">SPA App</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/fakultas">Jadwal</a>
+        <a
+          class="nav-link"
+          routerLink="/jadwal"
+          routerLinkActive="active"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          Jadwal
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/prodi">Murid</a>
+        <a
+          class="nav-link"
+          routerLink="/murid"
+          routerLinkActive="active"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          Murid
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/mahasiswa">Guru</a>
+        <a
+          class="nav-link"
+          routerLink="/guru"
+          routerLinkActive="active"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          Guru
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/mahasiswa">Jenis Bimbel</a>
+        <a
+          class="nav-link"
+          routerLink="/jenisbimbel"
+          routerLinkActive="active"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          Jenis Bimbel
+        </a>
+      </li>
+      
     </ul>
   </div>
 </nav>
 
-<router-outlet />
+<div class="container mt-3">
+  <router-outlet></router-outlet>
+</div>
