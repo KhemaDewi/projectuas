@@ -132,15 +132,22 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
   }
 
   // Method untuk memperbarui data Fakultas
-  updateguru(): void {
-    if (this.guruForm.valid && this.editGuruId) {
+updateGuru(): void {
+    if (this.guruForm.valid && this.editGuruId ) {
       this.isSubmitting = true;
       this.http.put(`${this.apiUrl}/${this.editGuruId}`, this.guruForm.value).subscribe({
         next: (response) => {
           console.log('Guru berhasil diperbarui:', response);
-          this.getGuru();
+          this.getGuru(); // Refresh data prodi
           this.isSubmitting = false;
-          this.isEditModalVisible = false; // Tutup modal
+          this.isEditModalVisible = false;
+
+          // Tutup modal edit setelah data berhasil diupdate
+          const modalElement = document.getElementById('editGuruModal') as HTMLElement;
+          if (modalElement) {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance?.hide();
+          }
         },
         error: (err) => {
           console.error('Error updating guru:', err);

@@ -89,6 +89,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
       });
     }
   }
+
   editJenisbimbelId: string | null = null;
   isEditModalVisible = false;
   getJenisbimbelById(_id: string): void {
@@ -109,15 +110,22 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   }
 
   // Method untuk memperbarui data Fakultas
-  updateMurid(): void {
-    if (this.jenisbimbelForm.valid && this.editJenisbimbelId) {
+updateJenisbimbel(): void {
+    if (this.jenisbimbelForm.valid && this.editJenisbimbelId ) {
       this.isSubmitting = true;
       this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, this.jenisbimbelForm.value).subscribe({
         next: (response) => {
-          console.log('Murid berhasil diperbarui:', response);
-          this.getJenisbimbel();
+          console.log('Jenisbimbel berhasil diperbarui:', response);
+          this.getJenisbimbel(); // Refresh data prodi
           this.isSubmitting = false;
-          this.isEditModalVisible = false; // Tutup modal
+          this.isEditModalVisible = false;
+
+          // Tutup modal edit setelah data berhasil diupdate
+          const modalElement = document.getElementById('editJenisbimbelModal') as HTMLElement;
+          if (modalElement) {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance?.hide();
+          }
         },
         error: (err) => {
           console.error('Error updating jenisbimbel:', err);

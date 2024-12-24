@@ -57,6 +57,47 @@
     </div>
   </div>
 
+  <!-- Modal Edit Prodi -->
+  <div class="modal" *ngIf="isEditModalVisible" style="display: block; background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editGuruModalLabel">
+            Ubah Data Guru
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="guruForm" (ngSubmit)="updateGuru()">
+            <div class="mb-3">
+              <label for="editNama" class="form-label">Nama</label>
+              <input id="editNama" type="text" class="form-control" formControlName="nama" />
+            </div>
+            <div class="mb-3">
+              <label for="editAlamat" class="form-label">Alamat</label>
+              <input id="editAlamat" type="text" class="form-control" formControlName="alamat" />
+            </div>
+            <div class="mb-3">
+              <label for="editno_hp" class="form-label">No Telepon</label>
+              <input id="editno_hp" type="text" class="form-control" formControlName="no_hp" />
+            </div>
+            <div class="mb-3">
+              <label for="editJenisbimbel" class="form-label">Jenis Bimbel</label>
+              <select id="editJenisbimbel" class="form-select" formControlName="jenisbimbel_id">
+                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
+                  {{ jenisbimbel.singkatan }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+              {{ isSubmitting ? "Menyimpan..." : "Ubah Data Guru" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
   <div *ngIf="guru.length > 0">
     <!-- Membuat tabel untuk menampilkan data fakultas -->
