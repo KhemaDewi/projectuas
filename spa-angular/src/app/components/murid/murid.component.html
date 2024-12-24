@@ -69,6 +69,109 @@
     </div>
   </div>
 
+   <!-- Modal Edit Prodi -->
+   <div
+   class="modal"
+   *ngIf="isEditModalVisible"
+   style="display: block; background: rgba(0, 0, 0, 0.5)"
+ >
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="editMuridModalLabel">
+           Ubah Data Murid
+         </h5>
+         <button
+           type="button"
+           class="btn-close"
+           data-bs-dismiss="modal"
+           aria-label="Close"
+         ></button>
+       </div>
+       <div class="modal-body">
+         <form [formGroup]="muridForm" (ngSubmit)="updateMurid()">
+           <div class="mb-3">
+             <label for="editNama" class="form-label">Nama</label>
+             <input
+               id="editNama"
+               type="text"
+               class="form-control"
+               formControlName="nama"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editAlamat" class="form-label">Alamat</label>
+             <input
+               id="editAlamat"
+               type="text"
+               class="form-control"
+               formControlName="alamat"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editKelas" class="form-label">Kelas</label>
+             <input
+               id="editKelas"
+               type="text"
+               class="form-control"
+               formControlName="kelas"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editno_hp" class="form-label">No Telepon</label>
+             <input
+               id="editno_hp"
+               type="text"
+               class="form-control"
+               formControlName="no_hp"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editno_hpOrtu" class="form-label">No Telepon Orang Tua</label>
+             <input
+               id="editno_hpOrtu"
+               type="text"
+               class="form-control"
+               formControlName="no_hpOrtu"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editasal_sekolah" class="form-label">Asal Sekolah</label>
+             <input
+               id="editasal_sekolah"
+               type="text"
+               class="form-control"
+               formControlName="asal_sekolah"
+             />
+           </div>
+           <div class="mb-3">
+             <label for="editJenisbimbel" class="form-label">Jenis Bimbel</label>
+             <select
+               id="editJenisbimbel"
+               class="form-select"
+               formControlName="jenisbimbel_id"
+             >
+               <option
+                 *ngFor="let jenisbimbel of jenisbimbel"
+                 [value]="jenisbimbel._id"
+               >
+                 {{ jenisbimbel.singkatan }}
+               </option>
+             </select>
+           </div>
+           <button
+             type="submit"
+             class="btn btn-primary"
+             [disabled]="isSubmitting"
+           >
+             {{ isSubmitting ? "Menyimpan..." : "Ubah Data Murid" }}
+           </button>
+         </form>
+       </div>
+     </div>
+   </div>
+ </div>
+
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
   <div *ngIf="murid.length > 0">
     <!-- Membuat tabel untuk menampilkan data fakultas -->
@@ -84,6 +187,7 @@
           <th>No Telepon Orang Tua</th> <!-- Singkatan nama fakultas -->
           <th>Asal Sekolah</th> <!-- Singkatan nama fakultas -->
           <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
+          <th>Aksi</th> <!-- Singkatan nama fakultas -->
         </tr>
       </thead>
       <tbody>
@@ -109,15 +213,18 @@
           <td>
             <!-- Tombol Edit -->
             <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMuridById(item._id)"
-              title="Edit Fakultas">
+              title="Ubah Data Murid">
               Edit
             </button>
 
             <!-- Tombol Hapus -->
-            <button type="button" class="btn btn-danger btn-sm" (click)="deleteFakultas(item._id)"
-              title="Hapus Fakultas">
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteMurid(item._id)"
+              title="Hapus Murid">
               Hapus
             </button>
+
+
+
           </td>
         </tr>
       </tbody>

@@ -127,7 +127,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
           asal_sekolah: data.asal_sekolah || '',
           jenibimbel_id: data.jenibimbel_id || '',
         });
-        this.isEditModalVisible = true; // Tampilkan modal edit
+        this.isEditModalVisible = true;
       },
       error: (err) => {
         console.error('Error fetching murid by ID:', err);
@@ -137,14 +137,21 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
 
   // Method untuk memperbarui data Fakultas
   updateMurid(): void {
-    if (this.muridForm.valid && this.editMuridId) {
+    if (this.muridForm.valid && this.editMuridId ) {
       this.isSubmitting = true;
       this.http.put(`${this.apiUrl}/${this.editMuridId}`, this.muridForm.value).subscribe({
         next: (response) => {
           console.log('Murid berhasil diperbarui:', response);
-          this.getMurid();
+          this.getMurid(); // Refresh data prodi
           this.isSubmitting = false;
-          this.isEditModalVisible = false; // Tutup modal
+          this.isEditModalVisible = false;
+
+          // Tutup modal edit setelah data berhasil diupdate
+          const modalElement = document.getElementById('editMuridModal') as HTMLElement;
+          if (modalElement) {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance?.hide();
+          }
         },
         error: (err) => {
           console.error('Error updating murid:', err);
@@ -155,15 +162,15 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   }
 
   // Method untuk menghapus data Fakultas
-  deleteFakultas(_id: string): void {
+  deleteMurid(_id: string): void {
     if (confirm('Apakah Anda yakin ingin menghapus Murid ini?')) {
       this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
         next: () => {
-          console.log(`Fakultas dengan ID ${_id} berhasil dihapus`);
+          console.log(`Murid dengan ID ${_id} berhasil dihapus`);
           this.getMurid(); // Refresh data Fakultas setelah penghapusan
         },
         error: (err) => {
-          console.error('Error menghapus fakultas:', err);
+          console.error('Error menghapus murid:', err);
         },
       });
     }
