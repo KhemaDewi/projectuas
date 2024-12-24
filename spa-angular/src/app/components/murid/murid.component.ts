@@ -112,4 +112,60 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
       });
     }
   }
+  editMuridId: string | null = null;
+  isEditModalVisible = false;
+  getMuridById(_id: string): void {
+    this.editMuridId = _id;
+    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+      next: (data: any) => {
+        this.muridForm.patchValue({
+          nama: data.nama || '',
+          alamat: data.alamat || '',
+          kelas: data.kelas || '',
+          no_hp: data.no_hp || '',
+          no_hpOrtu: data.no_hpOrtu || '',
+          asal_sekolah: data.asal_sekolah || '',
+          jenibimbel_id: data.jenibimbel_id || '',
+        });
+        this.isEditModalVisible = true; // Tampilkan modal edit
+      },
+      error: (err) => {
+        console.error('Error fetching murid by ID:', err);
+      },
+    });
+  }
+
+  // Method untuk memperbarui data Fakultas
+  updateMurid(): void {
+    if (this.muridForm.valid && this.editMuridId) {
+      this.isSubmitting = true;
+      this.http.put(`${this.apiUrl}/${this.editMuridId}`, this.muridForm.value).subscribe({
+        next: (response) => {
+          console.log('Murid berhasil diperbarui:', response);
+          this.getMurid();
+          this.isSubmitting = false;
+          this.isEditModalVisible = false; // Tutup modal
+        },
+        error: (err) => {
+          console.error('Error updating murid:', err);
+          this.isSubmitting = false;
+        },
+      });
+    }
+  }
+
+  // Method untuk menghapus data Fakultas
+  deleteFakultas(_id: string): void {
+    if (confirm('Apakah Anda yakin ingin menghapus Murid ini?')) {
+      this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
+        next: () => {
+          console.log(`Fakultas dengan ID ${_id} berhasil dihapus`);
+          this.getMurid(); // Refresh data Fakultas setelah penghapusan
+        },
+        error: (err) => {
+          console.error('Error menghapus fakultas:', err);
+        },
+      });
+    }
+  }
 }

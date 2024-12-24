@@ -9,87 +9,46 @@
   </div>
 
   <!-- Tombol untuk membuka modal -->
-  <button
-    type="button"
-    class="btn btn-primary mb-3"
-    data-bs-toggle="modal"
-    data-bs-target="#tambahGuruModal"
-  >
+  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahGuruModal">
     Tambah Guru
   </button>
 
   <!-- Modal Tambah Fakultas -->
-  <div
-    class="modal fade"
-    id="tambahGuruModal"
-    tabindex="-1"
-    aria-labelledby="tambahGuruLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="tambahGuruModal" tabindex="-1" aria-labelledby="tambahGuruLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="tambahGuruModalLabel">
             Tambah Guru
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="guruForm" (ngSubmit)="addGuru()">
             <div class="mb-3">
               <label for="nama" class="form-label">Nama Guru</label>
-              <input
-                id="nama"
-                type="text"
-                class="form-control"
-                formControlName="nama"
-              />
+              <input id="nama" type="text" class="form-control" formControlName="nama" />
             </div>
             <div class="mb-3">
               <label for="alamat" class="form-label">Alamat</label>
-              <input
-                id="alamat"
-                type="text"
-                class="form-control"
-                formControlName="alamat"
-              />
+              <input id="alamat" type="text" class="form-control" formControlName="alamat" />
             </div>
             <div class="mb-3">
               <label for="no_hp" class="form-label">No Telepon</label>
-              <input
-                id="no_hp"
-                type="text"
-                class="form-control"
-                formControlName="no_hp"
-              />
+              <input id="no_hp" type="text" class="form-control" formControlName="no_hp" />
             </div>
 
             <div class="mb-3">
               <!-- Dropdown untuk memilih fakultas -->
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
-              <select
-                id="jenisbimbel"
-                class="form-select"
-                formControlName="jenisbimbel_id">
-            <option
-                  *ngFor="let jenisbimbel of jenisbimbel"
-                  [value]="jenisbimbel._id"
-                >
+              <select id="jenisbimbel" class="form-select" formControlName="jenisbimbel_id">
+                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
                   {{ jenisbimbel.nama }}
                 </option>
               </select>
             </div>
 
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="isSubmitting"
-            >
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Tambah Guru" }}
             </button>
           </form>
@@ -99,44 +58,52 @@
   </div>
 
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
-<div *ngIf="guru.length > 0">
-  <!-- Membuat tabel untuk menampilkan data fakultas -->
-  <table class="table">
-    <thead>
-      <tr>
-        <!-- Header tabel -->
-        <th>#</th> <!-- Nomor urut -->
-        <th>Nama</th> <!-- Nama fakultas -->
-        <th>Alamat</th> <!-- Singkatan nama fakultas -->
-        <th>No Telepon</th> <!-- Singkatan nama fakultas -->
-        <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Looping data fakultas menggunakan directive *ngFor -->
-      <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
-      <tr
-        *ngFor="let item of guru | paginate: { itemsPerPage: 7, currentPage: currentPage }; index as i"
-      >
-        <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
-        <td>{{ (currentPage - 1) * 7 + i + 1 }}</td>
-        <!-- Menampilkan nama fakultas -->
-        <td>{{ item.nama }}</td>
-        <!-- Menampilkan singkatan fakultas -->
-        <td>{{ item.alamat }}</td>
-        <!-- Menampilkan singkatan fakultas -->
-        <td>{{ item.no_hp }}</td>
-        <!-- Menampilkan singkatan fakultas -->
-        <td>{{ item.jenisbimbel_id?.nama }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div *ngIf="guru.length > 0">
+    <!-- Membuat tabel untuk menampilkan data fakultas -->
+    <table class="table">
+      <thead>
+        <tr>
+          <!-- Header tabel -->
+          <th>#</th> <!-- Nomor urut -->
+          <th>Nama</th> <!-- Nama fakultas -->
+          <th>Alamat</th> <!-- Singkatan nama fakultas -->
+          <th>No Telepon</th> <!-- Singkatan nama fakultas -->
+          <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Looping data fakultas menggunakan directive *ngFor -->
+        <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
+        <tr *ngFor="let item of guru | paginate: { itemsPerPage: 5, currentPage: currentPage }; index as i">
+          <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
+          <td>{{ (currentPage - 1) * 5 + i + 1 }}</td>
+          <!-- Menampilkan nama fakultas -->
+          <td>{{ item.nama }}</td>
+          <!-- Menampilkan singkatan fakultas -->
+          <td>{{ item.alamat }}</td>
+          <!-- Menampilkan singkatan fakultas -->
+          <td>{{ item.no_hp }}</td>
+          <!-- Menampilkan singkatan fakultas -->
+          <td>{{ item.jenisbimbel_id?.nama }}</td>
+          <td>
+            <!-- Tombol Edit -->
+            <button type="button" class="btn btn-warning btn-sm me-2" (click)="getGuruById(item._id)" title="Edit Guru">
+              Edit
+            </button>
 
-  <!-- Kontrol Pagination -->
-  <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
-  <!-- Ketika halaman berubah, properti currentPage diperbarui -->
-  <pagination-controls (pageChange)="currentPage = $event">
-  </pagination-controls>
-</div>
+            <!-- Tombol Hapus -->
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteGuru(item._id)" title="Hapus Guru">
 
+              Hapus
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
+    <!-- Kontrol Pagination -->
+    <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
+    <!-- Ketika halaman berubah, properti currentPage diperbarui -->
+    <pagination-controls (pageChange)="currentPage = $event">
+    </pagination-controls>
+  </div>

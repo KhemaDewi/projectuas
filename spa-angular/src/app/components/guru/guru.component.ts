@@ -109,4 +109,60 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
       });
     }
   }
+
+  editGuruId: string | null = null;
+  isEditModalVisible = false;
+  getGuruById(_id: string): void {
+    this.editGuruId = _id;
+    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+      next: (data: any) => {
+        this.guruForm.patchValue({
+          nama: data.nama || '',
+          alamat: data.alamat || '',
+          kelas: data.kelas || '',
+          no_hp: data.no_hp || '',
+          jenibimbel_id: data.jenibimbel_id || '',
+        });
+        this.isEditModalVisible = true; // Tampilkan modal edit
+      },
+      error: (err) => {
+        console.error('Error fetching guru by ID:', err);
+      },
+    });
+  }
+
+  // Method untuk memperbarui data Fakultas
+  updateguru(): void {
+    if (this.guruForm.valid && this.editGuruId) {
+      this.isSubmitting = true;
+      this.http.put(`${this.apiUrl}/${this.editGuruId}`, this.guruForm.value).subscribe({
+        next: (response) => {
+          console.log('Guru berhasil diperbarui:', response);
+          this.getGuru();
+          this.isSubmitting = false;
+          this.isEditModalVisible = false; // Tutup modal
+        },
+        error: (err) => {
+          console.error('Error updating guru:', err);
+          this.isSubmitting = false;
+        },
+      });
+    }
+  }
+
+  // Method untuk menghapus data Fakultas
+  deleteGuru(_id: string): void {
+    if (confirm('Apakah Anda yakin ingin menghapus Guru ini?')) {
+      this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
+        next: () => {
+          console.log(`Guru dengan ID ${_id} berhasil dihapus`);
+          this.getGuru(); // Refresh data Fakultas setelah penghapusan
+        },
+        error: (err) => {
+          console.error('Error menghapus guru:', err);
+        },
+      });
+    }
+  }
 }
+

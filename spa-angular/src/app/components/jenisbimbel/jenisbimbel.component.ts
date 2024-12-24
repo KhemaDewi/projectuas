@@ -28,7 +28,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
     this.jenisbimbelForm = this.fb.group({
       nama: [''],
       singkatan: [''],
-      harga:['']
+      harga: ['']
     });
   }
 
@@ -84,6 +84,43 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
         },
         error: (err) => {
           console.error('Error menambahkan jenis bimbel:', err);
+          this.isSubmitting = false;
+        },
+      });
+    }
+  }
+  editJenisbimbelId: string | null = null;
+  isEditModalVisible = false;
+  getJenisbimbelById(_id: string): void {
+    this.editJenisbimbelId = _id;
+    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+      next: (data: any) => {
+        this.jenisbimbelForm.patchValue({
+          nama: data.nama || '',
+          singkatan: data.singkatan || '',
+          harga: data.harga || '',
+        });
+        this.isEditModalVisible = true; // Tampilkan modal edit
+      },
+      error: (err) => {
+        console.error('Error fetching jenisbimbel by ID:', err);
+      },
+    });
+  }
+
+  // Method untuk memperbarui data Fakultas
+  updateMurid(): void {
+    if (this.jenisbimbelForm.valid && this.editJenisbimbelId) {
+      this.isSubmitting = true;
+      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, this.jenisbimbelForm.value).subscribe({
+        next: (response) => {
+          console.log('Murid berhasil diperbarui:', response);
+          this.getJenisbimbel();
+          this.isSubmitting = false;
+          this.isEditModalVisible = false; // Tutup modal
+        },
+        error: (err) => {
+          console.error('Error updating jenisbimbel:', err);
           this.isSubmitting = false;
         },
       });
