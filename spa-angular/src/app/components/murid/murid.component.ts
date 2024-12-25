@@ -38,7 +38,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
       no_hpOrtu: [''],
       asal_sekolah: [''],
       jenisbimbel_id: [null],
-      jenisbimbel: [null]
+      
     });
   }
 

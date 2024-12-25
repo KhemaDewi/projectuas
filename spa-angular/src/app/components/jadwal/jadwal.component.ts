@@ -3,17 +3,24 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-jadwal',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './jadwal.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './jadwal.component.css'  // Path ke file CSS untuk komponen ini
 })
 export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   jadwal: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  apiUrl = 'https://bimbel-app.vercel.app/api/jadwal';  // URL API yang digunakan untuk mendapatkan data fakultas
+  jenisbimbel :any [] = [];
+  guru: any [] = [];
+  currentPage = 1;
+  itemsPerPage = 5;
+  apiJadwalUrl = 'https://bimbel-app.vercel.app/api/jadwal';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiJenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiGuruUrl = 'https://bimbel-app.vercel.app/api/guru';  // URL API yang digunakan untuk mendapatkan data guru
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   jadwalForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -28,19 +35,42 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.jadwalForm = this.fb.group({
       hari: [''],
       jam: [''],
-      jenisbimbel_id:[''],
+      jenisbimbel_id:[null],
       ruangkelas:[''],
-      guru_id:['']
+      guru_id:[null]
     });
   }
 
-  ngOnInit(): void {  // Lifecycle hook ngOnInit dipanggil saat komponen diinisialisasi
-    this.getJadwal();  // Memanggil method getFakultas saat komponen diinisialisasi
+  ngOnInit(): void {
+    this.getJadwal();
+    this.getJenisbimbel();  // Ambil data jenis bimbel
+    this.getGuru();  // Ambil data guru
+  }
+
+  getJenisbimbel(): void {
+    this.http.get<any[]>(this.apiJenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+      next: (data) => { // Callback jika request berhasil.
+        this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
+      },
+      error: (err) => { // Callback jika request gagal.
+        console.error('Error fetching jenis bimbel data:', err); // Log error ke konsol.
+      },
+    });
+  }
+  getGuru(): void {
+    this.http.get<any[]>(this.apiGuruUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+      next: (data) => { // Callback jika request berhasil.
+        this.guru = data; // Menyimpan data fakultas ke variabel.
+      },
+      error: (err) => { // Callback jika request gagal.
+        console.error('Error fetching guru data:', err); // Log error ke konsol.
+      },
+    });
   }
 
   getJadwal(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    this.http.get<any[]>(this.apiJadwalUrl).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jadwal = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jadwal:', this.jadwal);  // Mencetak data fakultas di console untuk debugging
@@ -57,7 +87,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
   addJadwal(): void {
     if (this.jadwalForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.jadwalForm.value).subscribe({
+      this.http.post(this.apiJadwalUrl, this.jadwalForm.value).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getJadwal();  // Refresh data fakultas
