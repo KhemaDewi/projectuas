@@ -13,7 +13,7 @@ import * as bootstrap from 'bootstrap';
 })
 export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   jenisbimbel: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  apijenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
+  apiUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
 
   jenisbimbelForm: FormGroup;  // Tambahkan untuk mengelola data formulir
@@ -38,7 +38,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 
   getJenisbimbel(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({
+    this.http.get<any[]>(this.apiUrl).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jenisbimbel = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jenis Bimbel:', this.jenisbimbel);  // Mencetak data fakultas di console untuk debugging
@@ -55,7 +55,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   addJenisbimbel(): void {
     if (this.jenisbimbelForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apijenisbimbelUrl, this.jenisbimbelForm.value).subscribe({
+      this.http.post(this.apiUrl, this.jenisbimbelForm.value).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getJenisbimbel();  // Refresh data fakultas
@@ -94,7 +94,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   isEditModalVisible = false;
   getJenisbimbelById(_id: string): void {
     this.editJenisbimbelId = _id;
-    this.http.get(`${this.apijenisbimbelUrl}/${_id}`).subscribe({
+    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
       next: (data: any) => {
         this.jenisbimbelForm.patchValue({
           nama: data.nama || '',
@@ -113,7 +113,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 updateJenisbimbel(): void {
     if (this.jenisbimbelForm.valid && this.editJenisbimbelId ) {
       this.isSubmitting = true;
-      this.http.put(`${this.apijenisbimbelUrl}/${this.editJenisbimbelId}`, this.jenisbimbelForm.value).subscribe({
+      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, this.jenisbimbelForm.value).subscribe({
         next: (response) => {
           console.log('Jenisbimbel berhasil diperbarui:', response);
           this.getJenisbimbel(); // Refresh data prodi
