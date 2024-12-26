@@ -120,12 +120,12 @@ updateJenisbimbel(): void {
           this.isSubmitting = false;
           this.isEditModalVisible = false;
 
-          // Tutup modal edit setelah data berhasil diupdate
-          const modalElement = document.getElementById('editJenisbimbelModal') as HTMLElement;
-          if (modalElement) {
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            modalInstance?.hide();
-          }
+            // Tutup modal edit setelah data berhasil diupdate
+           // const modalElement = document.getElementById('editJenisbimbelModal') as HTMLElement;
+            //if (modalElement) {
+             // const modalInstance = bootstrap.Modal.getInstance(modalElement);
+             // modalInstance?.hide();
+           // }
         },
         error: (err) => {
           console.error('Error updating jenisbimbel:', err);
