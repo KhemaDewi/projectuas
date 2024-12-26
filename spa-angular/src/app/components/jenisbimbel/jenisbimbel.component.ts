@@ -4,6 +4,15 @@ import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untu
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
 
+interface JenisBimbel {
+  _id: string;
+  nama: string;
+  singkatan: string;
+  harga: string;
+  createdAt: string;
+}
+
+
 @Component({
   selector: 'app-jenisbimbel',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
@@ -110,27 +119,48 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   }
 
   // Method untuk memperbarui data Fakultas
-updateJenisbimbel(): void {
-    if (this.jenisbimbelForm.valid && this.editJenisbimbelId ) {
+  updateJenisbimbel(): void {
+    if (this.jenisbimbelForm.valid && this.editJenisbimbelId) {
       this.isSubmitting = true;
-      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, this.jenisbimbelForm.value).subscribe({
-        next: (response) => {
-          console.log('Jenisbimbel berhasil diperbarui:', response);
-          this.getJenisbimbel(); // Refresh data prodi
-          this.isSubmitting = false;
-          this.isEditModalVisible = false;
 
-          // Tutup modal edit setelah data berhasil diupdate
-          const modalElement = document.getElementById('editJenisbimbelModal') as HTMLElement;
+      const updateData = {
+        nama: this.jenisbimbelForm.value.nama,
+        singkatan: this.jenisbimbelForm.value.singkatan,
+        harga: this.jenisbimbelForm.value.harga
+      };
+
+      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, updateData).subscribe({
+        next: (response) => {
+          console.log('Jenis Bimbel updated successfully:', response);
+          this.getJenisbimbel(); // Refresh data
+          this.isSubmitting = false;
+
+          // Tutup modal
+          const modalElement = document.getElementById('editJenisbimbelModal');
           if (modalElement) {
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            modalInstance?.hide();
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+              modal.hide();
+
+              // Cleanup modal
+              modalElement.addEventListener('hidden.bs.modal', () => {
+                document.body.classList.remove('modal-open');
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+                document.body.style.removeProperty('padding-right');
+                document.body.style.removeProperty('overflow');
+              }, { once: true });
+            }
           }
+
+          // Reset form dan ID
+          this.jenisbimbelForm.reset();
+          this.editJenisbimbelId = null;
         },
         error: (err) => {
-          console.error('Error updating jenisbimbel:', err);
+          console.error('Error updating jenis bimbel:', err);
           this.isSubmitting = false;
-        },
+        }
       });
     }
   }
