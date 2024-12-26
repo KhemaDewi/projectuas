@@ -175,11 +175,11 @@
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
   <div *ngIf="murid.length > 0">
     <!-- Membuat tabel untuk menampilkan data fakultas -->
-    <table class="table">
+    <table class="table table-bordered">
       <thead>
         <tr>
           <!-- Header tabel -->
-          <th>#</th> <!-- Nomor urut -->
+          <th>No</th> <!-- Nomor urut -->
           <th>Nama</th> <!-- Nama fakultas -->
           <th>Alamat</th> <!-- Singkatan nama fakultas -->
           <th>Kelas</th> <!-- Singkatan nama fakultas -->
@@ -209,7 +209,7 @@
           <!-- Menampilkan singkatan fakultas -->
           <td>{{ item.asal_sekolah }}</td>
           <!-- Menampilkan singkatan fakultas -->
-          <td>{{ item.jenisbimbel_id?.singkatan }}</td>
+          <td>{{ item.jenisbimbel_id?.nama }}</td>
           <td>
             <!-- Tombol Edit -->
             <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMuridById(item._id)"
