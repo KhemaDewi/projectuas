@@ -1,68 +1,70 @@
-import { CommonModule } from '@angular/common'; // Mengimpor modul Angular yang menyediakan direktif umum seperti ngIf, ngFor, dll.
-import { Component, OnInit, inject } from '@angular/core'; // Mengimpor decorator Component, interface OnInit untuk inisialisasi, dan inject untuk injeksi dependency.
-import { HttpClient } from '@angular/common/http'; // Mengimpor HttpClient untuk melakukan HTTP request ke server.
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; // Mengimpor modul dan class untuk membuat formulir reaktif.
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-materi', // Selector untuk komponen ini digunakan dalam template HTML.
-  standalone: true, // Menjadikan komponen ini sebagai standalone, tanpa bagian dari modul Angular lainnya.
-  imports: [CommonModule, ReactiveFormsModule], // Mengimpor modul Angular yang dibutuhkan untuk komponen ini.
-  templateUrl: './materi.component.html', // Lokasi file template HTML untuk komponen ini.
-  styleUrls: ['./materi.component.css'] // Lokasi file CSS untuk komponen ini.
+  selector: 'app-materi',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './materi.component.html',
+  styleUrls: ['./materi.component.css']
 })
-export class MateriComponent implements OnInit { // Mendeklarasikan class komponen dengan implementasi OnInit untuk inisialisasi.
-  materi: any[] = []; // Menyimpan data mahasiswa.
-  jenisbimbel: any[] = []; // Menyimpan data program studi untuk dropdown.
-  murid: any[] =[];
-  apiUrl = 'https://bimbel-app.vercel.app/api/materi'; // URL API untuk mengambil dan menambahkan data mahasiswa.
+export class MateriComponent implements OnInit {
+  materi: any[] = [];
+  jenisbimbel: any[] = [];
+  murid: any[] = [];
+  apiUrl = 'https://bimbel-app.vercel.app/api/materi';
   apimuridUrl = 'https://bimbel-app.vercel.app/api/murid';
-  apijenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel'; // URL API untuk mengambil data prodi.
-  isLoading = true; // Indikator loading data dari API.
-  materiForm: FormGroup; // Form group untuk formulir reaktif mahasiswa.
-  isSubmitting = false; // Indikator proses pengiriman data.
+  apijenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';
+  isLoading = true;
+  materiForm: FormGroup;
+  isSubmitting = false;
+  editMateriId: string | null = null;
+  isEditModalVisible = false;
 
-  private http = inject(HttpClient); // Menggunakan Angular inject API untuk menyuntikkan HttpClient.
-  private fb = inject(FormBuilder); // Menyuntikkan FormBuilder untuk membangun form reaktif.
+  private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
 
-  constructor() { // Konstruktor untuk inisialisasi komponen.
-    this.materiForm = this.fb.group({ // Membuat grup form dengan FormBuilder.
-      namamateri:[''],
-      deskripsi:[''],
-      kelas: [''], // Field NPM mahasiswa.
-      jenisbimbel_id: [null], // Field nama mahasiswa.
-      filemateri: [''],
+  constructor() {
+    this.materiForm = this.fb.group({
+      namamateri: ['', Validators.required],
+      deskripsi: ['', Validators.required],
+      kelas: ['', Validators.required],
+      jenisbimbel_id: [null, Validators.required],
+      filemateri: ['', Validators.required]
     });
   }
 
-  ngOnInit(): void { // Lifecycle method Angular, dipanggil saat komponen diinisialisasi.
-    this.getMateri(); // Memanggil fungsi untuk mengambil data mahasiswa.
-    this.getJenisbimbel(); // Memanggil fungsi untuk mengambil data program studi.
+  ngOnInit(): void {
+    this.getMateri();
+    this.getJenisbimbel();
     this.getMurid();
   }
 
-  // Mengambil data mahasiswa
+  // Mengambil data materi
   getMateri(): void {
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
-    this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
+    this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
       next: (data) => {
-        this.materi = data; // Menyimpan data mahasiswa ke variabel.
-        this.isLoading = false; // Menonaktifkan indikator loading.
+        this.materi = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching materi data:', err);
-        this.isLoading = false; // Menonaktifkan indikator loading.
+        this.isLoading = false;
       },
     });
   }
 
-  // Mengambil data program studi untuk dropdown
+  // Mengambil data jenis bimbel
   getJenisbimbel(): void {
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
-    this.http.get<any[]>(this.apijenisbimbelUrl,{headers}).subscribe({
+    this.http.get<any[]>(this.apijenisbimbelUrl, { headers }).subscribe({
       next: (data) => {
-        this.jenisbimbel = data; // Menyimpan data program studi ke variabel.
+        this.jenisbimbel = data;
       },
       error: (err) => {
         console.error('Error fetching jenis bimbel data:', err);
@@ -70,53 +72,62 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
     });
   }
 
+  // Mengambil data murid
   getMurid(): void {
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
-    this.http.get<any[]>(this.apimuridUrl,{headers}).subscribe({
+    this.http.get<any[]>(this.apimuridUrl, { headers }).subscribe({
       next: (data) => {
-        this.murid = data; // Menyimpan data mahasiswa ke variabel.
-        this.isLoading = false; // Menonaktifkan indikator loading.
+        this.murid = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching murid data:', err);
-        this.isLoading = false; // Menonaktifkan indikator loading.
+        this.isLoading = false;
       },
     });
   }
 
-  // Method untuk menambahkan mahasiswa
+  // Method untuk menambahkan materi
   addMateri(): void {
     if (this.materiForm.valid) {
-      this.isSubmitting = true; // Mengaktifkan indikator pengiriman data.
+      this.isSubmitting = true;
       const token = localStorage.getItem('authToken');
       const headers = { Authorization: `Bearer ${token}` };
 
-      this.http.post(this.apiUrl, this.materiForm.value,{headers}).subscribe({
+      // Membuat FormData untuk mengirim file dan data lainnya
+      const formData = new FormData();
+      formData.append('namamateri', this.materiForm.value.namamateri);
+      formData.append('deskripsi', this.materiForm.value.deskripsi);
+      formData.append('kelas', this.materiForm.value.kelas);
+      formData.append('jenisbimbel_id', this.materiForm.value.jenisbimbel_id);
+      formData.append('filemateri', this.materiForm.value.filemateri);
+
+      this.http.post(this.apiUrl, formData, { headers }).subscribe({
         next: (response) => {
-          console.log('Mahasiswa berhasil ditambahkan:', response);
-          this.getMateri(); // Refresh data mahasiswa setelah penambahan.
-          this.materiForm.reset(); // Reset form setelah data dikirim.
-          this.isSubmitting = false; // Menonaktifkan indikator pengiriman.
+          console.log('Materi berhasil ditambahkan:', response);
+          this.getMateri(); // Refresh data materi setelah penambahan
+          this.materiForm.reset(); // Reset form setelah data dikirim
+          this.isSubmitting = false;
         },
         error: (err) => {
           console.error('Error menambahkan materi:', err);
-          this.isSubmitting = false; // Menonaktifkan indikator pengiriman.
+          this.isSubmitting = false;
         },
       });
     }
   }
 
-  // Method untuk menghapus mahasiswa
+  // Method untuk menghapus materi
   deleteMateri(_id: string): void {
-    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+    if (confirm('Apakah Anda yakin ingin menghapus materi ini?')) {
       const token = localStorage.getItem('authToken');
       const headers = { Authorization: `Bearer ${token}` };
 
-      this.http.delete(`${this.apiUrl}/${_id}`,{headers}).subscribe({
+      this.http.delete(`${this.apiUrl}/${_id}`, { headers }).subscribe({
         next: () => {
-          console.log(`Mahasiswa dengan ID ${_id} berhasil dihapus`);
-          this.getMateri(); // Refresh data mahasiswa setelah penghapusan.
+          console.log(`Materi dengan ID ${_id} berhasil dihapus`);
+          this.getMateri(); // Refresh data materi setelah penghapusan
         },
         error: (err) => {
           console.error('Error menghapus materi:', err);
@@ -125,58 +136,63 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
     }
   }
 
-  editMateriId: string | null = null;
-  isEditModalVisible = false;
-
+  // Mengambil data materi berdasarkan ID untuk edit
   getMateriById(_id: string): void {
     console.log('Fetching Materi with ID:', _id);
     this.editMateriId = _id;
     const token = localStorage.getItem('authToken');
-      const headers = { Authorization: `Bearer ${token}` };
-    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get(`${this.apiUrl}/${_id}`, { headers }).subscribe({
       next: (data: any) => {
         console.log('Materi data fetched:', data);
         this.materiForm.patchValue({
           namamateri: data.namamateri || '',
           deskripsi: data.deskripsi || '',
           kelas: data.kelas || '',
-          jenisbimbel_id: data.jenisbimbel_id ||null,
-          linkurl: data.linkurl || '',
+          jenisbimbel_id: data.jenisbimbel_id || null,
         });
         this.isEditModalVisible = true;
       },
       error: (err) => {
-        console.error('Error fetching Materi by ID:', err);
+        console.error('Error fetching materi by ID:', err);
       },
     });
   }
 
+  // Method untuk update materi
   updateMateri(): void {
     if (this.materiForm.valid && this.editMateriId) {
-      this.isSubmitting = true; // Aktifkan indikator pengiriman data
+      this.isSubmitting = true;
       const token = localStorage.getItem('authToken');
       const headers = { Authorization: `Bearer ${token}` };
 
-      this.http.put(`${this.apiUrl}/${this.editMateriId}`, this.materiForm.value,{headers}).subscribe({
+      const formData = new FormData();
+      formData.append('namamateri', this.materiForm.value.namamateri);
+      formData.append('deskripsi', this.materiForm.value.deskripsi);
+      formData.append('kelas', this.materiForm.value.kelas);
+      formData.append('jenisbimbel_id', this.materiForm.value.jenisbimbel_id);
+      if (this.materiForm.value.filemateri) {
+        formData.append('filemateri', this.materiForm.value.filemateri);
+      }
+
+      this.http.put(`${this.apiUrl}/${this.editMateriId}`, formData, { headers }).subscribe({
         next: (response) => {
           console.log('Materi berhasil diperbarui:', response);
-          this.getMateri(); // Refresh data mahasiswa
+          this.getMateri(); // Refresh data materi
           this.isSubmitting = false;
 
-          // Tutup modal edit
-          const modalElement = document.getElementById('editMateriModal') as HTMLElement;
-          if (modalElement) {
-            // const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            // modalInstance?.hide();
-          }
+          // Tutup modal edit jika menggunakan Bootstrap atau ngIf
+          this.isEditModalVisible = false;
         },
         error: (err) => {
           console.error('Error updating materi:', err);
-          this.isSubmitting = false; // Nonaktifkan indikator pengiriman data
+          this.isSubmitting = false;
         },
       });
     }
   }
+
+  // Method untuk memilih file
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -190,7 +206,8 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
         return;
       }
 
-      // Set file directly instead of data URL
+      // Set file langsung ke form
       this.materiForm.patchValue({ filemateri: file });
     }
-}};
+  }
+}

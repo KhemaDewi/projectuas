@@ -55,7 +55,6 @@
               />
             </div>
 
-
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Tambah Materi" }}
             </button>
@@ -66,28 +65,27 @@
   </div>
 
   <!-- Card Data Materi -->
-<div class="row" *ngIf="materi.length > 0">
-  <div class="col-md-4 mb-4 d-flex align-items-stretch" *ngFor="let item of materi">
-    <div class="card w-100">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title">{{ item.namamateri }}</h5>
-        <p class="card-text">{{ item.deskripsi }}</p>
-        <p><strong>Kelas:</strong> {{ item.kelas }}</p>
-        <p><strong>Jenis Bimbel:</strong> {{ item.jenisbimbel_id?.nama }}</p>
-        <p><strong>File Materi:</strong> {{ item.filemateri }}</p>
-        <div class="mt-auto">
-          <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMateriById(item._id)">
-            Edit
-          </button>
-          <button type="button" class="btn btn-danger btn-sm" (click)="deleteMateri(item._id)">
-            Hapus
-          </button>
+  <div class="row" *ngIf="materi.length > 0">
+    <div class="col-md-4 mb-4 d-flex align-items-stretch" *ngFor="let item of materi">
+      <div class="card w-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ item.namamateri }}</h5>
+          <p class="card-text">{{ item.deskripsi }}</p>
+          <p><strong>Kelas:</strong> {{ item.kelas }}</p>
+          <p><strong>Jenis Bimbel:</strong> {{ item.jenisbimbel_id?.nama }}</p>
+          <p><strong>File Materi:</strong> {{ item.filemateri }}</p>
+          <div class="mt-auto">
+            <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMateriById(item._id)">
+              Edit
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteMateri(item._id)">
+              Hapus
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
 
   <!-- Modal Edit Materi -->
   <div class="modal" *ngIf="isEditModalVisible" style="display: block; background: rgba(0, 0, 0, 0.5)">
@@ -130,7 +128,6 @@
                 (change)="onFileSelect($event)"
               />
             </div>
-
 
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Ubah Data Materi" }}
