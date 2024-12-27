@@ -46,7 +46,9 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
 
   getGuru(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.guru = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Guru:', this.guru);  // Mencetak data fakultas di console untuk debugging
@@ -61,7 +63,9 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
 
   // Mengambil data fakultas untuk dropdown
   getJenisbimbel(): void {
-    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apijenisbimbelUrl,{headers}).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
       },
@@ -75,7 +79,10 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
   addGuru(): void {
     if (this.guruForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.guruForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.post(this.apiUrl, this.guruForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getGuru();  // Refresh data fakultas
@@ -114,7 +121,9 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
   isEditModalVisible = false;
   getGuruById(_id: string): void {
     this.editGuruId = _id;
-    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
       next: (data: any) => {
         this.guruForm.patchValue({
           nama: data.nama || '',
@@ -135,7 +144,10 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
 updateGuru(): void {
     if (this.guruForm.valid && this.editGuruId ) {
       this.isSubmitting = true;
-      this.http.put(`${this.apiUrl}/${this.editGuruId}`, this.guruForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.put(`${this.apiUrl}/${this.editGuruId}`, this.guruForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Guru berhasil diperbarui:', response);
           this.getGuru(); // Refresh data prodi
@@ -160,7 +172,9 @@ updateGuru(): void {
   // Method untuk menghapus data Fakultas
   deleteGuru(_id: string): void {
     if (confirm('Apakah Anda yakin ingin menghapus Guru ini?')) {
-      this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+      this.http.delete(`${this.apiUrl}/${_id}`,{headers}).subscribe({
         next: () => {
           console.log(`Guru dengan ID ${_id} berhasil dihapus`);
           this.getGuru(); // Refresh data Fakultas setelah penghapusan

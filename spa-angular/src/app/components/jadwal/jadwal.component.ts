@@ -48,7 +48,10 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
   }
 
   getJenisbimbel(): void {
-    this.http.get<any[]>(this.apiJenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    this.http.get<any[]>(this.apiJenisbimbelUrl,{headers}).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
       },
@@ -58,7 +61,9 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     });
   }
   getGuru(): void {
-    this.http.get<any[]>(this.apiGuruUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiGuruUrl,{headers}).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.guru = data; // Menyimpan data fakultas ke variabel.
       },
@@ -70,7 +75,9 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
 
   getJadwal(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiJadwalUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiJadwalUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jadwal = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jadwal:', this.jadwal);  // Mencetak data fakultas di console untuk debugging
@@ -89,7 +96,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
       this.isSubmitting = true;  // Set status submitting
 
       const token = localStorage.getItem('authToken');
-      const headers = { Authorization: 'Bearer ${token}' };
+      const headers = { Authorization: `Bearer ${token}` };
 
       this.http.post(this.apiJadwalUrl, this.jadwalForm.value, { headers }).subscribe({
         next: (response) => {

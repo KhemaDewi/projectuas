@@ -38,7 +38,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
       no_hpOrtu: [''],
       asal_sekolah: [''],
       jenisbimbel_id: [null],
-      
+
     });
   }
 
@@ -49,7 +49,9 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
 
   getMurid(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.murid = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Murid:', this.murid);  // Mencetak data fakultas di console untuk debugging
@@ -64,7 +66,9 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
 
   // Mengambil data fakultas untuk dropdown
   getJenisbimbel(): void {
-    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({ // Melakukan HTTP GET ke API fakultas.
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apijenisbimbelUrl,{headers}).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
       },
@@ -78,7 +82,10 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   addMurid(): void {
     if (this.muridForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.muridForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.post(this.apiUrl, this.muridForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getMurid();  // Refresh data fakultas
@@ -116,7 +123,9 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   isEditModalVisible = false;
   getMuridById(_id: string): void {
     this.editMuridId = _id;
-    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
       next: (data: any) => {
         this.muridForm.patchValue({
           nama: data.nama || '',
@@ -139,7 +148,10 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   updateMurid(): void {
     if (this.muridForm.valid && this.editMuridId ) {
       this.isSubmitting = true;
-      this.http.put(`${this.apiUrl}/${this.editMuridId}`, this.muridForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.put(`${this.apiUrl}/${this.editMuridId}`, this.muridForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Murid berhasil diperbarui:', response);
           this.getMurid(); // Refresh data prodi
@@ -164,7 +176,9 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
   // Method untuk menghapus data Fakultas
   deleteMurid(_id: string): void {
     if (confirm('Apakah Anda yakin ingin menghapus Murid ini?')) {
-      this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+      this.http.delete(`${this.apiUrl}/${_id}`,{headers}).subscribe({
         next: () => {
           console.log(`Murid dengan ID ${_id} berhasil dihapus`);
           this.getMurid(); // Refresh data Fakultas setelah penghapusan

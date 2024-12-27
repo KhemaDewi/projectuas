@@ -47,7 +47,10 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 
   getJenisbimbel(): void {  // Method untuk mengambil data fakultas dari API
     // Mengambil data dari API menggunakan HttpClient
-    this.http.get<any[]>(this.apiUrl).subscribe({
+
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jenisbimbel = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jenis Bimbel:', this.jenisbimbel);  // Mencetak data fakultas di console untuk debugging
@@ -64,7 +67,10 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   addJenisbimbel(): void {
     if (this.jenisbimbelForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiUrl, this.jenisbimbelForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.post(this.apiUrl, this.jenisbimbelForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getJenisbimbel();  // Refresh data fakultas
@@ -103,7 +109,10 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   isEditModalVisible = false;
   getJenisbimbelById(_id: string): void {
     this.editJenisbimbelId = _id;
-    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
       next: (data: any) => {
         this.jenisbimbelForm.patchValue({
           nama: data.nama || '',
@@ -128,13 +137,17 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
              // const modalInstance = bootstrap.Modal.getInstance(modalElement);
              // modalInstance?.hide();
            // }
+
+           const token = localStorage.getItem('authToken');
+           const headers = { Authorization: `Bearer ${token}` };
+
       const updateData = {
         nama: this.jenisbimbelForm.value.nama,
         singkatan: this.jenisbimbelForm.value.singkatan,
         harga: this.jenisbimbelForm.value.harga
       };
 
-      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, updateData).subscribe({
+      this.http.put(`${this.apiUrl}/${this.editJenisbimbelId}`, updateData,  { headers }).subscribe({
         next: (response) => {
           console.log('Jenis Bimbel updated successfully:', response);
           this.getJenisbimbel(); // Refresh data

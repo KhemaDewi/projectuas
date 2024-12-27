@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'; // Mengimpor modul Angular yang menyediakan direktif umum seperti ngIf, ngFor, dll.
 import { Component, OnInit, inject } from '@angular/core'; // Mengimpor decorator Component, interface OnInit untuk inisialisasi, dan inject untuk injeksi dependency.
 import { HttpClient } from '@angular/common/http'; // Mengimpor HttpClient untuk melakukan HTTP request ke server.
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // Mengimpor modul dan class untuk membuat formulir reaktif.
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; // Mengimpor modul dan class untuk membuat formulir reaktif.
 
 @Component({
   selector: 'app-materi', // Selector untuk komponen ini digunakan dalam template HTML.
@@ -30,7 +30,7 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
       deskripsi:[''],
       kelas: [''], // Field NPM mahasiswa.
       jenisbimbel_id: [null], // Field nama mahasiswa.
-      foto:['']
+      filemateri: [''],
     });
   }
 
@@ -42,7 +42,9 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
 
   // Mengambil data mahasiswa
   getMateri(): void {
-    this.http.get<any[]>(this.apiUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {
         this.materi = data; // Menyimpan data mahasiswa ke variabel.
         this.isLoading = false; // Menonaktifkan indikator loading.
@@ -56,7 +58,9 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
 
   // Mengambil data program studi untuk dropdown
   getJenisbimbel(): void {
-    this.http.get<any[]>(this.apijenisbimbelUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apijenisbimbelUrl,{headers}).subscribe({
       next: (data) => {
         this.jenisbimbel = data; // Menyimpan data program studi ke variabel.
       },
@@ -67,7 +71,9 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
   }
 
   getMurid(): void {
-    this.http.get<any[]>(this.apimuridUrl).subscribe({
+    const token = localStorage.getItem('authToken');
+    const headers = { Authorization: `Bearer ${token}` };
+    this.http.get<any[]>(this.apimuridUrl,{headers}).subscribe({
       next: (data) => {
         this.murid = data; // Menyimpan data mahasiswa ke variabel.
         this.isLoading = false; // Menonaktifkan indikator loading.
@@ -83,7 +89,10 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
   addMateri(): void {
     if (this.materiForm.valid) {
       this.isSubmitting = true; // Mengaktifkan indikator pengiriman data.
-      this.http.post(this.apiUrl, this.materiForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.post(this.apiUrl, this.materiForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Mahasiswa berhasil ditambahkan:', response);
           this.getMateri(); // Refresh data mahasiswa setelah penambahan.
@@ -101,7 +110,10 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
   // Method untuk menghapus mahasiswa
   deleteMateri(_id: string): void {
     if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-      this.http.delete(`${this.apiUrl}/${_id}`).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.delete(`${this.apiUrl}/${_id}`,{headers}).subscribe({
         next: () => {
           console.log(`Mahasiswa dengan ID ${_id} berhasil dihapus`);
           this.getMateri(); // Refresh data mahasiswa setelah penghapusan.
@@ -119,7 +131,9 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
   getMateriById(_id: string): void {
     console.log('Fetching Materi with ID:', _id);
     this.editMateriId = _id;
-    this.http.get(`${this.apiUrl}/${_id}`).subscribe({
+    const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
       next: (data: any) => {
         console.log('Materi data fetched:', data);
         this.materiForm.patchValue({
@@ -127,7 +141,7 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
           deskripsi: data.deskripsi || '',
           kelas: data.kelas || '',
           jenisbimbel_id: data.jenisbimbel_id ||null,
-          foto: data.foto || '',
+          linkurl: data.linkurl || '',
         });
         this.isEditModalVisible = true;
       },
@@ -140,7 +154,10 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
   updateMateri(): void {
     if (this.materiForm.valid && this.editMateriId) {
       this.isSubmitting = true; // Aktifkan indikator pengiriman data
-      this.http.put(`${this.apiUrl}/${this.editMateriId}`, this.materiForm.value).subscribe({
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      this.http.put(`${this.apiUrl}/${this.editMateriId}`, this.materiForm.value,{headers}).subscribe({
         next: (response) => {
           console.log('Materi berhasil diperbarui:', response);
           this.getMateri(); // Refresh data mahasiswa
@@ -160,21 +177,20 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
       });
     }
   }
-
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
-
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      const reader = new FileReader();
+      const maxSizeInMB = 100; // Match server limit
+      const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
-      reader.onload = () => {
-        // Simpan data URL gambar ke form atau objek mahasiswa
-        this.materiForm.patchValue({ foto: reader.result });
-      };
+      if (file.size > maxSizeInBytes) {
+        alert(`Ukuran file terlalu besar. Maksimal ${maxSizeInMB} MB.`);
+        input.value = '';
+        return;
+      }
 
-      reader.readAsDataURL(file);
+      // Set file directly instead of data URL
+      this.materiForm.patchValue({ filemateri: file });
     }
-  }
-
-}
+}};

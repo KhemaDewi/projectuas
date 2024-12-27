@@ -27,7 +27,7 @@
           <form [formGroup]="materiForm" (ngSubmit)="addMateri()">
             <div class="mb-3">
               <label for="nama" class="form-label">Nama Materi</label>
-              <input id="nama" type="text" class="form-control" formControlName="nama" />
+              <input id="nama" type="text" class="form-control" formControlName="namamateri" />
             </div>
             <div class="mb-3">
               <label for="deskripsi" class="form-label">Deskripsi</label>
@@ -46,9 +46,15 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="file" class="form-label">Link File Materi</label>
-              <input id="file" type="text" class="form-control" formControlName="fileUrl" placeholder="Masukkan link file" />
+              <label for="filemateri" class="form-label">File Materi</label>
+              <input
+                id="filemateri"
+                type="file"
+                class="form-control"
+                (change)="onFileSelect($event)"
+              />
             </div>
+
 
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Tambah Materi" }}
@@ -68,9 +74,7 @@
         <p class="card-text">{{ item.deskripsi }}</p>
         <p><strong>Kelas:</strong> {{ item.kelas }}</p>
         <p><strong>Jenis Bimbel:</strong> {{ item.jenisbimbel_id?.nama }}</p>
-        <div *ngIf="item.fileUrl" class="mt-auto">
-          <a [href]="item.fileUrl" target="_blank">Download File</a>
-        </div>
+        <p><strong>File Materi:</strong> {{ item.filemateri }}</p>
         <div class="mt-auto">
           <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMateriById(item._id)">
             Edit
@@ -118,9 +122,15 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="editFile" class="form-label">Link File Materi</label>
-              <input id="editFile" type="text" class="form-control" formControlName="linkurl" placeholder="Masukkan link file" />
+              <label for="editFilemateri" class="form-label">File Materi</label>
+              <input
+                id="editFilemateri"
+                type="file"
+                class="form-control"
+                (change)="onFileSelect($event)"
+              />
             </div>
+
 
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Ubah Data Materi" }}
