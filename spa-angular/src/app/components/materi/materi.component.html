@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2>Materi</h2>
+  <h2>Data Materi</h2>
 
   <!-- Loader -->
   <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
@@ -9,144 +9,33 @@
   </div>
 
   <!-- Tombol untuk membuka modal -->
-  <button
-    type="button"
-    class="btn btn-primary mb-3"
-    data-bs-toggle="modal"
-    data-bs-target="#tambahMateriModal"
-  >
+  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahMateriModal">
     Tambah Materi
   </button>
-  <!-- Modal Edit Mahasiswa -->
-  <div
-    class="modal"
-    *ngIf="isEditModalVisible"
-    style="display: block; background: rgba(0, 0, 0, 0.5)"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit Materi</h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="isEditModalVisible = false"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="materiForm" (ngSubmit)="updateMateri()">
-            <div class="mb-3">
-              <label for="editNamamateri" class="form-label">Nama Materi</label>
-              <input
-                id="editNamamateri"
-                type="text"
-                class="form-control"
-                formControlName="namamateri"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="editDeskripsi" class="form-label">Deskripsi</label>
-              <input
-                id="editDeskripsi"
-                type="text"
-                class="form-control"
-                formControlName="deskripsi"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="editKelas" class="form-label">Kelas</label>
-              <input
-                id="editKelas"
-                type="text"
-                class="form-control"
-                formControlName="kelas"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="editJenisbimbel" class="form-label">Jenis Bimbel</label>
-              <select
-                id="editJenisbimbel"
-                class="form-select"
-                formControlName="jenisbimbel_id"
-              >
-                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
-                  {{ jenisbimbel.singkatan }}
-                </option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="foto" class="form-label">File Materi</label>
-              <input
-                id="foto"
-                type="file"
-                class="form-control"
-                (change)="onFileSelect($event)"
-              />
-            </div>
 
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="isSubmitting"
-            >
-              {{ isSubmitting ? "Menyimpan..." : "Simpan Perubahan" }}
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Tambah Mahasiswa -->
-  <div
-    class="modal fade"
-    id="tambahMateriModal"
-    tabindex="-1"
-    aria-labelledby="tambahMateriModalLabel"
-    aria-hidden="true"
-  >
+  <!-- Modal Tambah Materi -->
+  <div class="modal fade" id="tambahMateriModal" tabindex="-1" aria-labelledby="tambahMateriLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="tambahMateriModalLabel">
             Tambah Materi
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="materiForm" (ngSubmit)="addMateri()">
             <div class="mb-3">
-              <label for="namamateri" class="form-label">Nama Materi</label>
-              <input
-                id="namamateri"
-                type="text"
-                class="form-control"
-                formControlName="namamateri"
-              />
+              <label for="nama" class="form-label">Nama Materi</label>
+              <input id="nama" type="text" class="form-control" formControlName="nama" />
             </div>
             <div class="mb-3">
               <label for="deskripsi" class="form-label">Deskripsi</label>
-              <input
-                id="deskripsi"
-                type="text"
-                class="form-control"
-                formControlName="deskripsi"
-              />
+              <textarea id="deskripsi" class="form-control" formControlName="deskripsi"></textarea>
             </div>
             <div class="mb-3">
               <label for="kelas" class="form-label">Kelas</label>
-              <input
-                id="kelas"
-                type="text"
-                class="form-control"
-                formControlName="kelas"
-              />
+              <input id="kelas" type="text" class="form-control" formControlName="kelas" />
             </div>
             <div class="mb-3">
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
@@ -157,20 +46,11 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="foto" class="form-label">File Materi</label>
-              <input
-                id="foto"
-                type="file"
-                class="form-control"
-                formControlName="foto"
-              />
+              <label for="file" class="form-label">Link File Materi</label>
+              <input id="file" type="text" class="form-control" formControlName="fileUrl" placeholder="Masukkan link file" />
             </div>
 
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="isSubmitting"
-            >
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Tambah Materi" }}
             </button>
           </form>
@@ -179,29 +59,73 @@
     </div>
   </div>
 
-  <!-- Data Mahasiswa dalam bentuk Card -->
-  <div class="row row-cols-1 row-cols-md-3 g-4 mt-4" *ngIf="!isLoading">
-    <div class="col" *ngFor="let item of materi">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">{{ item.namamateri }}</h5>
-          <p class="card-text"><strong>Deskripsi:</strong> {{ item.deskrispi }}</p>
-          <p class="card-text"><strong>File:</strong> {{ item.file }}</p>
-          <button
-            type="button"
-            class="btn btn-warning mt-3 me-2"
-            (click)="getMateriById(item._id)"
-          >
+  <!-- Card Data Materi -->
+<div class="row" *ngIf="materi.length > 0">
+  <div class="col-md-4 mb-4 d-flex align-items-stretch" *ngFor="let item of materi">
+    <div class="card w-100">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ item.namamateri }}</h5>
+        <p class="card-text">{{ item.deskripsi }}</p>
+        <p><strong>Kelas:</strong> {{ item.kelas }}</p>
+        <p><strong>Jenis Bimbel:</strong> {{ item.jenisbimbel_id?.nama }}</p>
+        <div *ngIf="item.fileUrl" class="mt-auto">
+          <a [href]="item.fileUrl" target="_blank">Download File</a>
+        </div>
+        <div class="mt-auto">
+          <button type="button" class="btn btn-warning btn-sm me-2" (click)="getMateriById(item._id)">
             Edit
           </button>
-
-          <button
-            type="button"
-            class="btn btn-danger mt-3"
-            (click)="deleteMateri(item._id)"
-          >
+          <button type="button" class="btn btn-danger btn-sm" (click)="deleteMateri(item._id)">
             Hapus
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Modal Edit Materi -->
+  <div class="modal" *ngIf="isEditModalVisible" style="display: block; background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editMateriModalLabel">
+            Ubah Data Materi
+          </h5>
+          <button type="button" class="btn-close" (click)="isEditModalVisible = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="materiForm" (ngSubmit)="updateMateri()">
+            <div class="mb-3">
+              <label for="editNama" class="form-label">Nama Materi</label>
+              <input id="editNama" type="text" class="form-control" formControlName="namamateri" />
+            </div>
+            <div class="mb-3">
+              <label for="editDeskripsi" class="form-label">Deskripsi</label>
+              <textarea id="editDeskripsi" class="form-control" formControlName="deskripsi"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editKelas" class="form-label">Kelas</label>
+              <input id="editKelas" type="text" class="form-control" formControlName="kelas" />
+            </div>
+            <div class="mb-3">
+              <label for="editJenisbimbel" class="form-label">Jenis Bimbel</label>
+              <select id="editJenisbimbel" class="form-select" formControlName="jenisbimbel_id">
+                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
+                  {{ jenisbimbel.singkatan }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="editFile" class="form-label">Link File Materi</label>
+              <input id="editFile" type="text" class="form-control" formControlName="linkurl" placeholder="Masukkan link file" />
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+              {{ isSubmitting ? "Menyimpan..." : "Ubah Data Materi" }}
+            </button>
+          </form>
         </div>
       </div>
     </div>
