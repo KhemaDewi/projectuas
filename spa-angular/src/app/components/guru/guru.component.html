@@ -43,7 +43,7 @@
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
               <select id="jenisbimbel" class="form-select" formControlName="jenisbimbel_id">
                 <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
-                  {{ jenisbimbel.nama }}
+                  {{ jenisbimbel.singkatan }}
                 </option>
               </select>
             </div>

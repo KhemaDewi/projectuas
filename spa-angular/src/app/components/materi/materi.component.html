@@ -56,35 +56,32 @@
             </div>
             <div class="mb-3">
               <label for="editKelas" class="form-label">Kelas</label>
-              <select
+              <input
                 id="editKelas"
-                class="form-select"
-                formControlName="murid_id"
-              >
-                <option *ngFor="let item of murid" [value]="item._id">
-                  {{ item.kelas }}
-                </option>
-              </select>
+                type="text"
+                class="form-control"
+                formControlName="kelas"
+              />
             </div>
             <div class="mb-3">
-              <label for="editjenisbimbel" class="form-label">Jenis Bimbel</label>
+              <label for="editJenisbimbel" class="form-label">Jenis Bimbel</label>
               <select
                 id="editJenisbimbel"
                 class="form-select"
                 formControlName="jenisbimbel_id"
               >
-                <option *ngFor="let item of jenisbimbel" [value]="item._id">
-                  {{ item.singkatan }}
+                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
+                  {{ jenisbimbel.singkatan }}
                 </option>
               </select>
             </div>
             <div class="mb-3">
-              <label for="filemateri" class="form-label">File Materi</label>
+              <label for="foto" class="form-label">File Materi</label>
               <input
-                id="filemateri"
+                id="foto"
                 type="file"
                 class="form-control"
-                formControlName="filemateri"
+                (change)="onFileSelect($event)"
               />
             </div>
 
@@ -144,27 +141,28 @@
             </div>
             <div class="mb-3">
               <label for="kelas" class="form-label">Kelas</label>
-              <select id="murid" class="form-select" formControlName="murid_id">
-                <option *ngFor="let item of murid" [value]="item._id">
-                  {{ item.kelas }}
-                </option>
-              </select>
+              <input
+                id="kelas"
+                type="text"
+                class="form-control"
+                formControlName="kelas"
+              />
             </div>
             <div class="mb-3">
               <label for="jenisbimbel" class="form-label">Jenis Bimbel</label>
               <select id="jenisbimbel" class="form-select" formControlName="jenisbimbel_id">
-                <option *ngFor="let item of jenisbimbel" [value]="item._id">
-                  {{ item.singkatan }}
+                <option *ngFor="let jenisbimbel of jenisbimbel" [value]="jenisbimbel._id">
+                  {{ jenisbimbel.singkatan }}
                 </option>
               </select>
             </div>
             <div class="mb-3">
-              <label for="filemateri" class="form-label">File Materi</label>
+              <label for="foto" class="form-label">File Materi</label>
               <input
-                id="filemateri"
+                id="foto"
                 type="file"
                 class="form-control"
-                formControlName="filemateri"
+                formControlName="foto"
               />
             </div>
 

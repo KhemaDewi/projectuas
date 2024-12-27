@@ -28,9 +28,9 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
     this.materiForm = this.fb.group({ // Membuat grup form dengan FormBuilder.
       namamateri:[''],
       deskripsi:[''],
-      kelas_id: [null], // Field NPM mahasiswa.
+      kelas: [''], // Field NPM mahasiswa.
       jenisbimbel_id: [null], // Field nama mahasiswa.
-      file:[]
+      foto:['']
     });
   }
 
@@ -121,12 +121,13 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
     this.editMateriId = _id;
     this.http.get(`${this.apiUrl}/${_id}`).subscribe({
       next: (data: any) => {
-        console.log('Mahasiswa data fetched:', data);
+        console.log('Materi data fetched:', data);
         this.materiForm.patchValue({
           namamateri: data.namamateri || '',
           deskripsi: data.deskripsi || '',
-          kelas_id: data.kelas_id || null,
+          kelas: data.kelas || '',
           jenisbimbel_id: data.jenisbimbel_id ||null,
+          foto: data.foto || '',
         });
         this.isEditModalVisible = true;
       },
@@ -157,6 +158,22 @@ export class MateriComponent implements OnInit { // Mendeklarasikan class kompon
           this.isSubmitting = false; // Nonaktifkan indikator pengiriman data
         },
       });
+    }
+  }
+
+  onFileSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        // Simpan data URL gambar ke form atau objek mahasiswa
+        this.materiForm.patchValue({ foto: reader.result });
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 
