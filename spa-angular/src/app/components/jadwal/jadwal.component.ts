@@ -14,8 +14,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 })
 export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   jadwal: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  jenisbimbel :any [] = [];
-  guru: any [] = [];
+  jenisbimbel: any[] = [];
+  guru: any[] = [];
   currentPage = 1;
   itemsPerPage = 5;
   apiJadwalUrl = 'https://bimbel-app.vercel.app/api/jadwal';  // URL API yang digunakan untuk mendapatkan data fakultas
@@ -35,9 +35,9 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.jadwalForm = this.fb.group({
       hari: [''],
       jam: [''],
-      jenisbimbel_id:[null],
-      ruangkelas:[''],
-      guru_id:[null]
+      jenisbimbel_id: [null],
+      ruangkelas: [''],
+      guru_id: [null]
     });
   }
 
@@ -87,7 +87,11 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
   addJadwal(): void {
     if (this.jadwalForm.valid) {
       this.isSubmitting = true;  // Set status submitting
-      this.http.post(this.apiJadwalUrl, this.jadwalForm.value).subscribe({
+
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: 'Bearer ${token}' };
+
+      this.http.post(this.apiJadwalUrl, this.jadwalForm.value, { headers }).subscribe({
         next: (response) => {
           console.log('Data berhasil ditambahkan:', response);
           this.getJadwal();  // Refresh data fakultas
