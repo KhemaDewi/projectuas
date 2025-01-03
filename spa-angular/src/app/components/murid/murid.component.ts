@@ -3,18 +3,21 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
+import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination'; // Impor modul ngx-pagination
 
 @Component({
   selector: 'app-murid',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule, FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './murid.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './murid.component.css'  // Path ke file CSS untuk komponen ini
 })
 export class MuridComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
   murid: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
   jenisbimbel: any[] = []; // Menyimpan data fakultas untuk dropdown.
+  filteredMurid: any[] = [];
+  searchTerm: string = '';
   currentPage = 1;
   itemsPerPage = 7;
 
@@ -54,6 +57,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
     this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.murid = data;  // Menyimpan data yang diterima ke dalam properti fakultas
+        this.filteredMurid = data;
         console.log('Data Murid:', this.murid);  // Mencetak data fakultas di console untuk debugging
         this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
       },
@@ -62,6 +66,11 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
         this.isLoading = false;  // Tetap mengubah status loading menjadi false meskipun terjadi error, untuk menghentikan loader
       },
     });
+  }
+  filterMurid(): void {
+    this.filteredMurid = this.murid.filter((item) =>
+      item.nama.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
   // Mengambil data fakultas untuk dropdown

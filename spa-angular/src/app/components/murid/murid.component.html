@@ -1,17 +1,33 @@
 <div class="container mt-4">
   <h2>Data Murid</h2>
 
+  <!-- Tombol untuk membuka modal -->
+  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahMuridModal">
+    Tambah Murid
+  </button>
+
+  <!-- Input Pencarian dengan Icon -->
+   <div class="d-flex justify-content-end mb-3">
+     <div class="input-group" style="width: 200px;">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Cari Murid..."
+      [(ngModel)]="searchTerm"
+      (input)="filterMurid()"
+    />
+    <span class="input-group-text">
+      <i class="bi bi-search"></i>
+    </span>
+  </div>
+</div>
+
   <!-- Loader -->
   <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-
-  <!-- Tombol untuk membuka modal -->
-  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahMuridModal">
-    Tambah Murid
-  </button>
 
   <!-- Modal Tambah Fakultas -->
   <div class="modal fade" id="tambahMuridModal" tabindex="-1" aria-labelledby="tambahMuridLabel" aria-hidden="true">
@@ -193,9 +209,9 @@
       <tbody>
         <!-- Looping data fakultas menggunakan directive *ngFor -->
         <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
-        <tr *ngFor="let item of murid | paginate: { itemsPerPage: 7, currentPage: currentPage }; index as i">
+        <tr *ngFor="let item of filteredMurid | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; index as i">
           <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
-          <td>{{ (currentPage - 1) * 7 + i + 1 }}</td>
+          <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
           <!-- Menampilkan nama fakultas -->
           <td>{{ item.nama }}</td>
           <!-- Menampilkan singkatan fakultas -->
