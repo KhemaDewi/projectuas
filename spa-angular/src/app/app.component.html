@@ -84,8 +84,7 @@
       <a
         *ngIf="isLoggedIn"
         class="nav-link"
-        routerLink="/auth"
-        routerLinkActive="active"
+        (click)="onLogout()"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
       >
