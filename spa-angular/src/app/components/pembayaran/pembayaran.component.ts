@@ -30,7 +30,7 @@ export class PembayaranComponent implements OnInit {  // Deklarasi komponen deng
       pembayaran_bln: [''],
       jml_transaksi: [''],
       no_rek: [''],
-      validasi: ['']
+      validasi: ['Y']
     });
   }
 
@@ -112,7 +112,7 @@ export class PembayaranComponent implements OnInit {  // Deklarasi komponen deng
           pembayaran_bln: data.pembayaran_bln || '',
           jml_transaksi: data.jml_transaksi || '',
           no_rek: data.no_rek || '',
-          validasi: data.validasi || '',
+          validasi: data.validasi || 'L',
         });
         this.isEditModalVisible = true; // Tampilkan modal edit
       },

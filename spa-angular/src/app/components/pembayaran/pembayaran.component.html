@@ -44,8 +44,12 @@
             </div>
             <div class="mb-3">
               <label for="validasi" class="form-label">Validasi</label>
-              <input id="validasi" type="text" class="form-control" formControlName="validasi" />
-            </div>
+              <select id="validasi" class="form-select" formControlName="validasi" >
+
+                <option value="Y">YA</option>
+                <option value="T">TIDAK</option>
+                </select>
+                </div>
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Upload Bukti Pembayaran" }}
             </button>
@@ -55,7 +59,7 @@
     </div>
   </div>
 
-  <!-- Modal Edit Prodi -->
+  <!-- Modal Edit Pembayaran -->
   <div class="modal" *ngIf="isEditModalVisible" style="display: block; background: rgba(0, 0, 0, 0.5)">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -85,8 +89,12 @@
             </div>
             <div class="mb-3">
               <label for="validasi" class="form-label">Validasi</label>
-              <input id="validasi" type="text" class="form-control" formControlName="validasi" />
-            </div>
+              <select id="validasi" class="form-select" formControlName="validasi" >
+
+                <option value="Y">YA</option>
+                <option value="T">TIDAK</option>
+                </select>
+                </div>
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Upload Bukti Pembayaran" }}
             </button>
@@ -113,7 +121,7 @@
         <td>{{ item.pembayaran_bln }}</td>
         <td>{{ item.jml_transaksi }}</td>
         <td>{{ item.no_rek }}</td>
-        <td>{{ item.validasi }}</td>
+        <td>{{ item.validasi === 'Y' ? 'YA' : 'TIDAK' }}</td>
         <td>
           <!-- Tombol Edit -->
           <button type="button" class="btn btn-warning btn-sm me-2" (click)="getPembayaranById(item._id)"
