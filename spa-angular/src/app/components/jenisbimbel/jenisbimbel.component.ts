@@ -27,6 +27,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 
   jenisbimbelForm: FormGroup;  // Tambahkan untuk mengelola data formulir
   isSubmitting = false;  // Status untuk mencegah double submit
+  userRole: string |null = null;
 
   private http = inject(HttpClient);  // Menggunakan inject untuk mendapatkan instance HttpClient di dalam komponen standalone (untuk Angular versi terbaru yang mendukung pendekatan ini)
 
@@ -43,6 +44,13 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
 
   ngOnInit(): void {  // Lifecycle hook ngOnInit dipanggil saat komponen diinisialisasi
     this.getJenisbimbel();  // Memanggil method getFakultas saat komponen diinisialisasi
+    this.getUserRole();
+  }
+
+  getUserRole(): void {
+    this.userRole = localStorage.getItem('userRole');
+    console.log('User Role:', this.userRole);
+    
   }
 
   getJenisbimbel(): void {  // Method untuk mengambil data fakultas dari API

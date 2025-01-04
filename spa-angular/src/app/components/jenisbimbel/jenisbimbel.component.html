@@ -9,7 +9,7 @@
   </div>
 
   <!-- Tombol untuk membuka modal -->
-  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahJenisbimbelModal">
+  <button *ngIf="userRole === 'admin'" type="button " class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahJenisbimbelModal">
     Tambah Jenis Bimbel
   </button>
 
@@ -19,7 +19,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="tambahJenisbimbelModalLabel">
+          <h5 class="modal-title" id="tambahJenisbimbelModalLabel" >
             Tambah Jenis Bimbel
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -48,7 +48,7 @@
   </div>
 
   <!-- Modal Edit Prodi -->
-  <div class="modal" *ngIf="isEditModalVisible" style="display: block; background: rgba(0, 0, 0, 0.5)">
+  <div class="modal" *ngIf="isEditModalVisible && userRole === 'admin'" style="display: block; background: rgba(0, 0, 0, 0.5)">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -80,14 +80,14 @@
     </div>
   </div>
 
-  <!-- Data Fakultas -->
+  <!-- Data Jenis Bimbel -->
   <table class="table table-bordered table-striped" *ngIf="!isLoading">
     <thead>
       <tr>
         <th>Nama</th>
         <th>Singkatan</th>
         <th>Harga</th>
-        <th>Aksi</th>
+        <th *ngIf="userRole === 'admin'">Aksi</th>
       </tr>
     </thead>
     <tbody>
@@ -97,7 +97,7 @@
         <td>{{ item.harga }}</td>
         <td>
           <!-- Tombol Edit -->
-          <button type="button" class="btn btn-warning btn-sm me-2" (click)="getJenisbimbelById(item._id)"
+          <button *ngIf="userRole === 'admin'" type="button" class="btn btn-warning btn-sm me-2" (click)="getJenisbimbelById(item._id)"
             title="Ubah Data Jenisbimbel">
             Edit
           </button>

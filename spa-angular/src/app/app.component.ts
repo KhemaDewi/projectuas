@@ -12,18 +12,28 @@ import { Router } from '@angular/router';  // Mengimpor Router
 })
 export class AppComponent implements OnInit {
   title = 'spa-angular';
-
+  userRole: string | null = null;
   isLoggedIn: boolean = false; // Menyimpan status login
   constructor(private router: Router) { } // Menambahkan router pada konstruktor
 
   ngOnInit() {
+    this.getUserRole();
+    this.checkLoginStatus();
     // Memeriksa apakah ada token di localStorage
+    this.isLoggedIn = !!localStorage.getItem('authToken');
+  }
+  getUserRole(): void {
+    this.userRole = localStorage.getItem('userRole');
+  }
+  checkLoginStatus(): void {
     this.isLoggedIn = !!localStorage.getItem('authToken');
   }
 
   onLogout() {
     // Menghapus token dari localStorage saat logout
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userRole');
+    this.checkLoginStatus();
     this.isLoggedIn = false; // Mengubah status login menjadi false
     this.router.navigate(['/auth']); // Arahkan ke halaman login setelah logout
   }
