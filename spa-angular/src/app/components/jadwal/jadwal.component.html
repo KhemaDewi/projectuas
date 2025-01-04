@@ -1,5 +1,5 @@
-<div class="container mt-4">
-  <h2>Jadwal Bimbel</h2>
+<div class="container mt-4" style="background: #f9f9f9; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+  <h2 style="text-align: center; color: #4b79a1; font-weight: bold;">Jadwal Bimbel</h2>
 
   <!-- Loader -->
   <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
@@ -14,7 +14,7 @@
     class="btn btn-primary mb-3"
     data-bs-toggle="modal"
     data-bs-target="#tambahJadwalModal"
-  >
+    style="background: #4b79a1; border: none; font-weight: bold;">
     Tambah Jadwal
   </button>
 
@@ -28,7 +28,7 @@
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" style="background: #4b79a1; color: white;">
           <h5 class="modal-title" id="tambahJadwalModalLabel">
             Tambah Jadwal
           </h5>
@@ -48,6 +48,7 @@
                 type="text"
                 class="form-control"
                 formControlName="jam"
+                style="border-radius: 10px; border: 1px solid #c3cfe2;"
               />
             </div>
             <div class="mb-3">
@@ -57,6 +58,7 @@
                 type="text"
                 class="form-control"
                 formControlName="hari"
+                style="border-radius: 10px; border: 1px solid #c3cfe2;"
               />
             </div>
             <div class="mb-3">
@@ -65,7 +67,8 @@
               <select
                 id="jenisbimbel"
                 class="form-select"
-                formControlName="jenisbimbel_id">
+                formControlName="jenisbimbel_id"
+                style="border-radius: 10px; border: 1px solid #c3cfe2;">
             <option
                   *ngFor="let jenisbimbel of jenisbimbel"
                   [value]="jenisbimbel._id"
@@ -81,6 +84,7 @@
                 type="text"
                 class="form-control"
                 formControlName="ruangkelas"
+                style="border-radius: 10px; border: 1px solid #c3cfe2;"
               />
             </div>
             <div class="mb-3">
@@ -89,7 +93,8 @@
               <select
                 id="guru"
                 class="form-select"
-                formControlName="guru_id">
+                formControlName="guru_id"
+                style="border-radius: 10px; border: 1px solid #c3cfe2;">
             <option
                   *ngFor="let guru of guru"
                   [value]="guru._id"
@@ -103,7 +108,7 @@
               type="submit"
               class="btn btn-primary"
               [disabled]="isSubmitting"
-            >
+              style="border-radius: 10px; background: #4b79a1; border: none; font-weight: bold;">
               {{ isSubmitting ? "Menyimpan..." : "Tambah Jadwal" }}
             </button>
           </form>
@@ -115,8 +120,8 @@
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
 <div *ngIf="jadwal.length > 0">
   <!-- Membuat tabel untuk menampilkan data fakultas -->
-  <table class="table table-bordered">
-    <thead>
+  <table class="table table-bordered" style="background: white; border-radius: 10px; overflow: hidden;">
+    <thead style="background: #4b79a1; color: white;">
       <tr>
         <!-- Header tabel -->
         <th>No</th> <!-- Nomor urut -->
@@ -132,7 +137,7 @@
       <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
       <tr
         *ngFor="let item of jadwal | paginate: { itemsPerPage: 7, currentPage: currentPage }; index as i"
-      >
+        style="background: #f9f9f9; color: #333;">
         <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
         <td>{{ (currentPage - 1) * 7 + i + 1 }}</td>
         <!-- Menampilkan nama fakultas -->
@@ -145,7 +150,7 @@
         <td>{{ item.ruangkelas }}</td>
         <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.guru_id?.nama }}</td>
-        
+
       </tr>
     </tbody>
   </table>
@@ -153,8 +158,7 @@
   <!-- Kontrol Pagination -->
   <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
   <!-- Ketika halaman berubah, properti currentPage diperbarui -->
-  <pagination-controls (pageChange)="currentPage = $event">
-  </pagination-controls>
+  <pagination-controls
+    (pageChange)="currentPage = $event"
+    style="margin-top: 10px; display: flex; justify-content: center;"></pagination-controls>
 </div>
-
-
