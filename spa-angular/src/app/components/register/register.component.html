@@ -1,0 +1,75 @@
+<!-- <div class="container mt-4 d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(135deg, #f5f7fa, #c3cfe2);">
+  <div class="card shadow-lg" style="width: 400px; border-radius: 15px;">
+    <div class="card-body">
+      <h2 class="text-center mb-4" style="color: #4b79a1; font-weight: bold;">Register</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+
+        <div class="mb-3">
+          <label for="nama" class="form-label" style="font-weight: 500; color: #333;">Nama</label>
+          <input id="nama" type="text" class="form-control" formControlName="nama" placeholder="Enter your nama" style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label" style="font-weight: 500; color: #333;">Email</label>
+          <input id="email" type="text" class="form-control" formControlName="email" placeholder="Enter your email" style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label" style="font-weight: 500; color: #333;">Password</label>
+          <input id="password" type="password" class="form-control" formControlName="password" placeholder="Enter your password" style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" style="border-radius: 10px; background: #4b79a1; border: none; font-weight: bold;">
+          {{ isSubmitting ? "Registering..." : "Register" }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div> -->
+<!-- Container utama yang membungkus seluruh form login dengan margin atas 4 -->
+<div class="container mt-4 d-flex justify-content-center align-items-center"
+  style="min-height: 100vh; background: linear-gradient(135deg, #f5f7fa, #c3cfe2);">
+  <!-- Card untuk membungkus form agar terlihat lebih menarik -->
+  <div class="card shadow-lg" style="width: 400px; border-radius: 15px;">
+    <div class="card-body">
+      <!-- Judul form login dengan gaya yang lebih menonjol -->
+      <h2 class="text-center mb-4" style="color: #4b79a1; font-weight: bold;">Register</h2>
+
+      <!-- Formulir yang dihubungkan dengan FormGroup 'authForm' dan akan memanggil 'onAuth()' ketika disubmit -->
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <div class="mb-3">
+          <!-- Label untuk input email -->
+          <label for="nama" class="form-label" style="font-weight: 500; color: #333;">Nama</label>
+          <!-- Input untuk email yang terhubung dengan formControl 'email' -->
+          <input id="nama" type="text" class="form-control" formControlName="nama" placeholder="Enter your nama"
+            style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+        <!-- Grup input untuk email dengan margin bawah 3 -->
+        <div class="mb-3">
+          <!-- Label untuk input email -->
+          <label for="email" class="form-label" style="font-weight: 500; color: #333;">Email</label>
+          <!-- Input untuk email yang terhubung dengan formControl 'email' -->
+          <input id="email" type="text" class="form-control" formControlName="email" placeholder="Enter your email"
+            style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+
+        <!-- Grup input untuk password dengan margin bawah 3 -->
+        <div class="mb-3">
+          <!-- Label untuk input password -->
+          <label for="password" class="form-label" style="font-weight: 500; color: #333;">Password</label>
+          <!-- Input untuk password yang terhubung dengan formControl 'password' -->
+          <input id="password" type="password" class="form-control" formControlName="password"
+            placeholder="Enter your password" style="border-radius: 10px; border: 1px solid #c3cfe2;" />
+        </div>
+
+        <!-- Tombol untuk submit form, dengan status teks yang dinamis tergantung pada variabel 'isSubmitting' -->
+        <button type="submit" class="btn btn-primary w-100"
+          style="border-radius: 10px; background: #4b79a1; border: none; font-weight: bold;">
+          <!-- Menampilkan "Login..." jika sedang mengirim data (isSubmitting = true), jika tidak menampilkan "Login" -->
+          {{ isSubmitting ? "Register..." : "Register" }}
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>

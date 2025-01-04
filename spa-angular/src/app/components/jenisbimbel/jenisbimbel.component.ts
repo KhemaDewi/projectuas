@@ -3,20 +3,13 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
-
-interface JenisBimbel {
-  _id: string;
-  nama: string;
-  singkatan: string;
-  harga: string;
-  createdAt: string;
-}
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-jenisbimbel',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule,FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './jenisbimbel.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './jenisbimbel.component.css'  // Path ke file CSS untuk komponen ini
 })
@@ -24,7 +17,8 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   jenisbimbel: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
   apiUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
-
+  filteredJenisBimbel: any[] = [];
+  searchTerm: string = '';
   jenisbimbelForm: FormGroup;  // Tambahkan untuk mengelola data formulir
   isSubmitting = false;  // Status untuk mencegah double submit
   userRole: string |null = null;
@@ -50,7 +44,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
   getUserRole(): void {
     this.userRole = localStorage.getItem('userRole');
     console.log('User Role:', this.userRole);
-    
+
   }
 
   getJenisbimbel(): void {  // Method untuk mengambil data fakultas dari API
@@ -60,6 +54,7 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
     const headers = { Authorization: `Bearer ${token}` };
     this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
+        this.filteredJenisBimbel = data;
         this.jenisbimbel = data;  // Menyimpan data yang diterima ke dalam properti fakultas
         console.log('Data Jenis Bimbel:', this.jenisbimbel);  // Mencetak data fakultas di console untuk debugging
         this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
@@ -70,6 +65,18 @@ export class JenisbimbelComponent implements OnInit {  // Deklarasi komponen den
       },
     });
   }
+
+  filterJenisBimbel(): void {
+    if (this.searchTerm.trim() === '') {
+      this.filteredJenisBimbel = [...this.jenisbimbel];  // If no search term, show all data
+    } else {
+      this.filteredJenisBimbel = this.jenisbimbel.filter(item =>
+        item.nama.toLowerCase().includes(this.searchTerm.toLowerCase()) ||  // Check 'nama' field
+        item.singkatan.toLowerCase().includes(this.searchTerm.toLowerCase())  // Check 'singkatan' field
+      );
+    }
+  }
+  
 
   // Method untuk menambahkan fakultas
   addJenisbimbel(): void {

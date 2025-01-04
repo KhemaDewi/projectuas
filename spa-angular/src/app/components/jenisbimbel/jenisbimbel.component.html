@@ -13,6 +13,22 @@
     Tambah Jenis Bimbel
   </button>
 
+  <!-- Input Pencarian dengan Icon -->
+  <div class="d-flex justify-content-end mb-3">
+    <div class="input-group" style="width: 200px;">
+   <input
+     type="text"
+     class="form-control"
+     placeholder="Cari Jenis Bimbel..."
+     [(ngModel)]="searchTerm"
+     (input)="filterJenisBimbel()"
+   />
+   <span class="input-group-text">
+     <i class="bi bi-search"></i>
+   </span>
+ </div>
+</div>
+
   <!-- Modal Tambah Fakultas -->
   <div class="modal fade" id="tambahJenisbimbelModal" tabindex="-1" aria-labelledby="tambahJenisbimbelModalLabel"
     aria-hidden="true">
@@ -91,7 +107,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of jenisbimbel">
+      <tr *ngFor="let item of filteredJenisBimbel">
         <td>{{ item.nama }}</td>
         <td>{{ item.singkatan }}</td>
         <td>{{ item.harga }}</td>

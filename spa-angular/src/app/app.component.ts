@@ -37,4 +37,11 @@ export class AppComponent implements OnInit {
     this.isLoggedIn = false; // Mengubah status login menjadi false
     this.router.navigate(['/auth']); // Arahkan ke halaman login setelah logout
   }
+  // Fungsi untuk menutup offcanvas setelah navigasi
+  closeOffcanvas() {
+    const offcanvasElement = document.getElementById('offcanvasNavbar') as any;
+    if (offcanvasElement) {
+      offcanvasElement.classList.remove('show'); // Menghilangkan kelas 'show' untuk menutup offcanvas
+    }
+  }
 }

@@ -3,118 +3,97 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pembayaran',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule,FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './pembayaran.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './pembayaran.component.css'  // Path ke file CSS untuk komponen ini
 })
-export class PembayaranComponent implements OnInit {  // Deklarasi komponen dengan mengimplementasikan lifecycle hook OnInit
-  pembayaran: any[] = [];  // Mendeklarasikan properti fakultas yang akan menyimpan data yang diterima dari API
-  errorMessage: string='';
-  apiUrl = 'https://bimbel-app.vercel.app/api/pembayaran';  // URL API yang digunakan untuk mendapatkan data fakultas
-  isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
+export class PembayaranComponent implements OnInit {
+  pembayaran: any[] = [];
+  errorMessage: string = '';
+  filteredPembayaran: any[] = [];
+  searchTerm: string = '';
+  apiUrl = 'https://bimbel-app.vercel.app/api/pembayaran'
+  isLoading = true;
 
-  pembayaranForm: FormGroup;  // Tambahkan untuk mengelola data formulir
-  isSubmitting = false;  // Status untuk mencegah double submit
+  pembayaranForm: FormGroup;
+  isSubmitting = false;
+  userRole: string | null = null; // Peran pengguna (admin/user)
 
-  // private http = inject(HttpClient);  // Menggunakan inject untuk mendapatkan instance HttpClient di dalam komponen standalone (untuk Angular versi terbaru yang mendukung pendekatan ini)
-  private fb = inject(FormBuilder);  // Inject FormBuilder untuk membuat FormGroup
+  editPembayaranId: string | null = null;
+  isEditModalVisible = false;
+
+  private fb = inject(FormBuilder);
 
   constructor(private http: HttpClient) {
-    // Inisialisasi form dengan kontrol nama dan singkatan
     this.pembayaranForm = this.fb.group({
+      namaMurid:[''],
       tgl_pembayaran: [''],
       pembayaran_bln: [''],
       jml_transaksi: [''],
       no_rek: [''],
-      validasi: ['Y']
+      validasi: ['BELUM'], // Set default validasi kosong
     });
   }
 
-  ngOnInit(): void {  // Lifecycle hook ngOnInit dipanggil saat komponen diinisialisasi
-    this.getPembayaran();  // Memanggil method getFakultas saat komponen diinisialisasi
+  ngOnInit(): void {
+    this.getPembayaran();
+    this.getUserRole();
   }
 
-  getPembayaran(): void {  // Method untuk mengambil data fakultas dari API
-    // Mengambil data dari API menggunakan HttpClient
+  getUserRole(): void {
+    this.userRole = localStorage.getItem('userRole');
+    console.log('User Role:', this.userRole);
+  }
 
+  getPembayaran(): void {
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
+
     this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
-      next: (data) => {  // Callback untuk menangani data yang diterima dari API
-        this.pembayaran = data;  // Menyimpan data yang diterima ke dalam properti fakultas
-        console.log('Data Pembayaran:', this.pembayaran);  // Mencetak data fakultas di console untuk debugging
-        this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
+      next: (data) => {
+        this.pembayaran = data.map((item) => ({
+          ...item,
+
+          validasi: item.validasi || null, // Set nilai validasi default
+
+        }));
+        this.filteredPembayaran = data;
+        this.isLoading = false;
       },
-      error: (err) => {  // Callback untuk menangani jika terjadi error saat mengambil data
-        console.error('Error fetching pembayaran data:', err);  // Mencetak error di console untuk debugging
-        this.isLoading = false;  // Tetap mengubah status loading menjadi false meskipun terjadi error, untuk menghentikan loader
+      error: (err) => {
+        console.error('Error fetching pembayaran data:', err);
+        this.isLoading = false;
       },
     });
   }
 
-  // Method untuk menambahkan fakultas
-  addPembayaran(): void {
-    if (this.pembayaranForm.valid) {
-      this.isSubmitting = true;  // Set status submitting
-      const token = localStorage.getItem('authToken');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      this.http.post(this.apiUrl, this.pembayaranForm.value, { headers }).subscribe({
-        next: (response) => {
-          console.log('Data berhasil ditambahkan:', response);
-          this.getPembayaran();  // Refresh data fakultas
-          this.pembayaranForm.reset();  // Reset formulir
-          this.isSubmitting = false;  // Reset status submitting
-
-          // Tutup modal setelah data berhasil ditambahkan
-          const modalElement = document.getElementById('tambahPembayaranModal') as HTMLElement;
-          if (modalElement) {
-            const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-            modalInstance.hide();
-
-            // Pastikan untuk menghapus atribut dan gaya pada body setelah modal ditutup
-            modalElement.addEventListener('hidden.bs.modal', () => {
-              const backdrop = document.querySelector('.modal-backdrop');
-              if (backdrop) {
-                backdrop.remove();
-              }
-
-              // Pulihkan scroll pada body
-              document.body.classList.remove('modal-open');
-              document.body.style.overflow = '';
-              document.body.style.paddingRight = '';
-            }, { once: true }); // Hanya jalankan sekali untuk setiap instance modal
-          }
-        },
-        error: (err) => {
-          console.error('Error menambahkan pembayaran:', err);
-          this.isSubmitting = false;
-        },
-      });
-    }
+  filterPembayaran(): void {
+    this.filteredPembayaran = this.pembayaran.filter((item) =>
+      item.nama.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 
-  editPembayaranId: string | null = null;
-  isEditModalVisible = false;
+
   getPembayaranById(_id: string): void {
     this.editPembayaranId = _id;
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
-
-    this.http.get(`${this.apiUrl}/${_id}`, { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
       next: (data: any) => {
         this.pembayaranForm.patchValue({
+          namaMurid: data.namaMurid || '',
           tgl_pembayaran: data.tgl_pembayaran || '',
           pembayaran_bln: data.pembayaran_bln || '',
           jml_transaksi: data.jml_transaksi || '',
           no_rek: data.no_rek || '',
-          validasi: data.validasi || 'L',
+          validasi: data.validasi || '',
         });
-        this.isEditModalVisible = true; // Tampilkan modal edit
+        this.isEditModalVisible = true;
       },
       error: (err) => {
         console.error('Error fetching pembayaran by ID:', err);
@@ -122,61 +101,65 @@ export class PembayaranComponent implements OnInit {  // Deklarasi komponen deng
     });
   }
 
-  // Method untuk memperbarui data Fakultas
-  updatePembayaran(): void {
-    if (this.pembayaranForm.valid && this.editPembayaranId) {
+  addPembayaran(): void {
+    if (this.pembayaranForm.valid) {
       this.isSubmitting = true;
-      // Tutup modal edit setelah data berhasil diupdate
-      // const modalElement = document.getElementById('editJenisbimbelModal') as HTMLElement;
-      //if (modalElement) {
-      // const modalInstance = bootstrap.Modal.getInstance(modalElement);
-      // modalInstance?.hide();
-      // }
+
+      const formData = this.pembayaranForm.value;
+      if (!formData.validasi) {
+        formData.validasi = 'BELUM'; // Set default jika kosong
+      }
 
       const token = localStorage.getItem('authToken');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const updateData = {
-        tgl_pembayaran: this.pembayaranForm.value.tgl_pembayaran,
-        pembayaran_bln: this.pembayaranForm.value.pembayaran_bln,
-        jml_transaksi: this.pembayaranForm.value.jml_transaksi,
-        no_rek: this.pembayaranForm.value.no_rek,
-        validasi: this.pembayaranForm.value.validasi
-      };
+      this.http.post(this.apiUrl, this.pembayaranForm.value, { headers }).subscribe({
+        next: () => {
+          this.getPembayaran();
+          this.pembayaranForm.reset();
+          this.closeModal('tambahPembayaranModal');
+          this.isSubmitting = false;
+        },
+        error: (err) => {
+          console.error('Error adding pembayaran:', err);
+          this.isSubmitting = false;
+        },
+      });
+    }
+  }
+
+  updatePembayaran(): void {
+    if (this.pembayaranForm.valid && this.editPembayaranId) {
+      this.isSubmitting = true;
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const updateData = this.pembayaranForm.value;
 
       this.http.put(`${this.apiUrl}/${this.editPembayaranId}`, updateData, { headers }).subscribe({
-        next: (response) => {
-          console.log('Pembayaran updated successfully:', response);
-          this.getPembayaran(); // Refresh data
-          this.isSubmitting = false;
-
-          // Tutup modal
-          const modalElement = document.getElementById('editPembayaranModal');
-          if (modalElement) {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-              modal.hide();
-
-              // Cleanup modal
-              modalElement.addEventListener('hidden.bs.modal', () => {
-                document.body.classList.remove('modal-open');
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) backdrop.remove();
-                document.body.style.removeProperty('padding-right');
-                document.body.style.removeProperty('overflow');
-              }, { once: true });
-            }
-          }
-
-          // Reset form dan ID
+        next: () => {
+          this.getPembayaran();
+          this.closeModal('editPembayaranModal');
           this.pembayaranForm.reset();
           this.editPembayaranId = null;
+          this.isSubmitting = false;
         },
         error: (err) => {
           console.error('Error updating pembayaran:', err);
           this.isSubmitting = false;
-        }
+        },
       });
+    }
+  }
+
+  closeModal(modalId: string): void {
+    const modalElement = document.getElementById(modalId) as HTMLElement;
+    if (modalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+      modalInstance.hide();
+      if (modalInstance) {
+        modalInstance.hide(); // Menutup modal
+      }
     }
   }
 }

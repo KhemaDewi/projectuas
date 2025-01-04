@@ -9,9 +9,25 @@
   </div>
 
   <!-- Tombol untuk membuka modal -->
-  <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahPembayaranModal">
+  <button *ngIf="userRole === 'user'"type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahPembayaranModal">
     Upload Bukti Pembayaran
   </button>
+
+  <!-- Input Pencarian dengan Icon -->
+  <div class="d-flex justify-content-end mb-3">
+    <div class="input-group" style="width: 200px;">
+   <input
+     type="text"
+     class="form-control"
+     placeholder="Cari Nama Murid..."
+     [(ngModel)]="searchTerm"
+     (input)="filterPembayaran()"
+   />
+   <span class="input-group-text">
+     <i class="bi bi-search"></i>
+   </span>
+ </div>
+</div>
 
   <!-- Modal Tambah Fakultas -->
   <div class="modal fade" id="tambahPembayaranModal" tabindex="-1" aria-labelledby="tambahPembayaranModalLabel"
@@ -26,6 +42,10 @@
         </div>
         <div class="modal-body">
           <form [formGroup]="pembayaranForm" (ngSubmit)="addPembayaran()">
+            <div class="mb-3">
+              <label for="namaMurid" class="form-label">Nama Murid</label>
+              <input id="namaMurid" type="text" class="form-control" formControlName="namaMurid" />
+            </div>
             <div class="mb-3">
               <label for="tgl_pembayaran" class="form-label">Tanggal Pembayaran</label>
               <input id="tgl_pembayaran" type="text" class="form-control" formControlName="tgl_pembayaran" />
@@ -42,14 +62,14 @@
               <label for="no_rek" class="form-label">No Rekening</label>
               <input id="no_rek" type="text" class="form-control" formControlName="no_rek" />
             </div>
-            <div class="mb-3">
-              <label for="validasi" class="form-label">Validasi</label>
-              <select id="validasi" class="form-select" formControlName="validasi" >
-
+            <td *ngIf="userRole === 'admin'">
+              <select id="validasi" class="form-select" formControlName="validasi">
+                <option [value]="null">-</option>
                 <option value="Y">YA</option>
                 <option value="T">TIDAK</option>
-                </select>
-                </div>
+              </select>
+            </td>
+
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Upload Bukti Pembayaran" }}
             </button>
@@ -72,6 +92,10 @@
         <div class="modal-body">
           <form [formGroup]="pembayaranForm" (ngSubmit)="updatePembayaran()">
             <div class="mb-3">
+              <label for="namaMurid" class="form-label">Nama Murid</label>
+              <input id="namaMurid" type="text" class="form-control" formControlName="namaMurid" />
+            </div>
+            <div class="mb-3">
               <label for="tgl_pembayaran" class="form-label">Tanggal</label>
               <input id="tgl_pembayaran" type="text" class="form-control" formControlName="tgl_pembayaran" />
             </div>
@@ -87,14 +111,13 @@
               <label for="no_rek" class="form-label">No Rekening</label>
               <input id="no_rek" type="text" class="form-control" formControlName="no_rek" />
             </div>
-            <div class="mb-3">
-              <label for="validasi" class="form-label">Validasi</label>
-              <select id="validasi" class="form-select" formControlName="validasi" >
-
+            <td *ngIf="userRole === 'admin'">
+              <select id="validasi" class="form-select" formControlName="validasi">
+                <option [value]="null">-</option>
                 <option value="Y">YA</option>
                 <option value="T">TIDAK</option>
-                </select>
-                </div>
+              </select>
+            </td>
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
               {{ isSubmitting ? "Menyimpan..." : "Upload Bukti Pembayaran" }}
             </button>
@@ -108,23 +131,32 @@
   <table class="table table-bordered table-striped" *ngIf="!isLoading">
     <thead>
       <tr>
+        <th>Nama Murid</th>
         <th>Tanggal</th>
         <th>Pembayaran Bulan</th>
         <th>Jumlah Transaksi</th>
         <th>No Rekening</th>
         <th>Validasi</th>
+        <th *ngIf="userRole === 'admin'">Hasil Validasi</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of pembayaran">
+      <tr *ngFor="let item of filteredPembayaran">
+        <td>{{ item.namaMurid }}</td>
         <td>{{ item.tgl_pembayaran }}</td>
         <td>{{ item.pembayaran_bln }}</td>
         <td>{{ item.jml_transaksi }}</td>
         <td>{{ item.no_rek }}</td>
-        <td>{{ item.validasi === 'Y' ? 'YA' : 'TIDAK' }}</td>
+        <td *ngIf="userRole !== 'admin'">
+          {{ item.validasi === 'Y' ? 'YA' : item.validasi === 'T' ? 'TIDAK' : '' }}
+        </td>
+        <td *ngIf="userRole === 'admin'">
+          <!-- Menampilkan hasil validasi -->
+          {{ item.validasi === 'Y' ? 'Valid' : item.validasi === 'T' ? 'Tidak Valid' : 'Belum Divalidasi' }}
+        </td>
         <td>
           <!-- Tombol Edit -->
-          <button type="button" class="btn btn-warning btn-sm me-2" (click)="getPembayaranById(item._id)"
+          <button *ngIf="userRole === 'admin' "type="button" class="btn btn-warning btn-sm me-2" (click)="getPembayaranById(item._id)"
             title="Ubah Data Pembayaran">
             Edit
           </button>
