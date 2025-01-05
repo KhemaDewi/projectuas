@@ -1,76 +1,150 @@
-<!-- Navbar dengan Offcanvas, navbar berada di bawah tulisan SPA -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">SPA App</a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-bs-toggle="offcanvas"
-    data-bs-target="#offcanvasNavbar"
-    aria-controls="offcanvasNavbar"
-    aria-label="Toggle navigation"
-  >
+<!-- Sidebar hanya muncul saat sudah login -->
+<div class="d-flex" *ngIf="isLoggedIn">
+  <div class="sidebar bg-light border-end" style="width: 250px; min-height: 100vh; position: fixed;">
+    <div class="d-flex flex-column" style="height: 100vh;">
+      <div class="p-3">
+        <a class="navbar-brand mb-4 d-block" href="#">SPA App</a>
+        <ul class="nav flex-column">
+          <li class="nav-item" *ngIf="userRole === 'admin'">
+            <a class="nav-link" routerLink="/register" routerLinkActive="active">
+              Register
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/jadwal" routerLinkActive="active">
+              Jadwal
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/pembayaran" routerLinkActive="active">
+              Pembayaran
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="userRole === 'admin'">
+            <a class="nav-link" routerLink="/murid" routerLinkActive="active">
+              Murid
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="userRole === 'admin'">
+            <a class="nav-link" routerLink="/guru" routerLinkActive="active">
+              Guru
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/jenisbimbel" routerLinkActive="active">
+              Jenis Bimbel
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- Logout di bagian bawah -->
+      <div class="mt-auto p-3 border-top">
+        <a class="nav-link" (click)="onLogout()">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Toggle Button -->
+  <button class="btn btn-light d-lg-none position-fixed"
+          style="z-index: 1030; top: 10px; left: 10px;"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#mobileSidebar">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <!-- Offcanvas Navbar -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+  <!-- Mobile Sidebar (Offcanvas) -->
+  <div class="offcanvas offcanvas-start d-lg-none" id="mobileSidebar">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasNavbarLabel">SPA App</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <h5 class="offcanvas-title">SPA App</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-    <div class="offcanvas-body">
-      <ul class="navbar-nav">
+    <div class="offcanvas-body d-flex flex-column">
+      <ul class="nav flex-column">
         <li class="nav-item" *ngIf="userRole === 'admin'">
-          <a class="nav-link" routerLink="/register" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/register" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Register
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/jadwal" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/jadwal" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Jadwal
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/pembayaran" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/pembayaran" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Pembayaran
           </a>
         </li>
         <li class="nav-item" *ngIf="userRole === 'admin'">
-          <a class="nav-link" routerLink="/murid" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/murid" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Murid
           </a>
         </li>
         <li class="nav-item" *ngIf="userRole === 'admin'">
-          <a class="nav-link" routerLink="/guru" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/guru" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Guru
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/jenisbimbel" routerLinkActive="active" (click)="closeOffcanvas()">
+          <a class="nav-link" routerLink="/jenisbimbel" routerLinkActive="active" data-bs-dismiss="offcanvas">
             Jenis Bimbel
           </a>
         </li>
-        <li class="nav-item">
-          <a *ngIf="!isLoggedIn" class="nav-link" routerLink="/auth" routerLinkActive="active" (click)="closeOffcanvas()">
-            Login
-          </a>
-        </li>
-        <li class="nav-item">
-          <a *ngIf="isLoggedIn" class="nav-link" (click)="onLogout(); closeOffcanvas()">
-            Logout
-          </a>
-        </li>
       </ul>
+      <!-- Logout di bagian bawah untuk mobile -->
+      <div class="mt-auto border-top pt-3">
+        <a class="nav-link" (click)="onLogout(); closeOffcanvas()">
+          Logout
+        </a>
+      </div>
     </div>
   </div>
-</nav>
 
-<!-- Form Login -->
-<div *ngIf="!isLoggedIn">
-  <router-outlet></router-outlet> <!-- Tempatkan form login di sini -->
+  <!-- Main Content dengan sidebar -->
+  <div class="content-wrapper" style="margin-left: 250px; width: calc(100% - 250px);">
+    <div class="p-4">
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Konten Utama -->
-<div class="container mt-3" *ngIf="isLoggedIn">
+<!-- Main Content tanpa sidebar (hanya untuk login) -->
+<div *ngIf="!isLoggedIn" class="container mt-5">
   <router-outlet></router-outlet>
 </div>
+
+<style>
+@media (max-width: 991.98px) {
+  .sidebar {
+    display: none;
+  }
+  .content-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+.nav-link.active {
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.nav-link {
+  padding: 8px 16px;
+}
+
+/* Style untuk tombol logout */
+.nav-link[onclick*="onLogout"] {
+  color: #dc3545;
+}
+
+.nav-link[onclick*="onLogout"]:hover {
+  background-color: #dc354520;
+  border-radius: 4px;
+}
+</style>
