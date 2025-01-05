@@ -62,7 +62,7 @@ export class AuthComponent {
           // Menyimpan token yang diterima ke localStorage
           localStorage.setItem('authToken', response.token);
           console.log('Login berhasil:', response);
-          
+
           localStorage.setItem('userRole', response.role);
 
           // Mengarahkan ke halaman fakultas setelah login berhasil

@@ -13,6 +13,23 @@
     Tambah Guru
   </button>
 
+   <!-- Input Pencarian dengan Icon -->
+   <div class="d-flex justify-content-end mb-3">
+    <div class="input-group" style="width: 200px;">
+   <input
+     type="text"
+     class="form-control"
+     placeholder="Cari Nama Guru..."
+     [(ngModel)]="searchTerm"
+     (input)="filterGuru()"
+   />
+   <span class="input-group-text">
+     <i class="bi bi-search"></i>
+   </span>
+ </div>
+</div>
+
+
   <!-- Modal Tambah Fakultas -->
   <div class="modal fade" id="tambahGuruModal" tabindex="-1" aria-labelledby="tambahGuruLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -115,7 +132,7 @@
       <tbody>
         <!-- Looping data fakultas menggunakan directive *ngFor -->
         <!-- Data difilter dengan pipe paginate untuk membatasi jumlah data per halaman -->
-        <tr *ngFor="let item of guru | paginate: { itemsPerPage: 5, currentPage: currentPage }; index as i">
+        <tr *ngFor="let item of filteredGuru | paginate: { itemsPerPage: 5, currentPage: currentPage }; index as i">
           <!-- Menampilkan nomor urut berdasarkan halaman saat ini -->
           <td>{{ (currentPage - 1) * 5 + i + 1 }}</td>
           <!-- Menampilkan nama fakultas -->

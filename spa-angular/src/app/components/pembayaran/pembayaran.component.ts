@@ -41,8 +41,9 @@ export class PembayaranComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getPembayaran();
     this.getUserRole();
+    this.getPembayaran();
+
   }
 
   getUserRole(): void {
@@ -53,29 +54,29 @@ export class PembayaranComponent implements OnInit {
   getPembayaran(): void {
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
+      this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
+        next: (data) => {
+          this.pembayaran = data.map((item) => ({
+            ...item,
 
-    this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
-      next: (data) => {
-        this.pembayaran = data.map((item) => ({
-          ...item,
+            validasi: item.validasi || null, // Set nilai validasi default
 
-          validasi: item.validasi || null, // Set nilai validasi default
-
-        }));
-        this.filteredPembayaran = data;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching pembayaran data:', err);
-        this.isLoading = false;
-      },
-    });
-  }
+          }));
+          this.filteredPembayaran = data;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching pembayaran data (admin):', err);
+          this.isLoading = false;
+        },
+      });
+    }
 
   filterPembayaran(): void {
-    this.filteredPembayaran = this.pembayaran.filter((item) =>
-      item.nama.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+    this.filteredPembayaran = this.pembayaran.filter((item) => {
+      const namaMurid = item.namaMurid || ''; // Pastikan nilai default adalah string kosong
+      return namaMurid.toLowerCase().includes(this.searchTerm.toLowerCase());
+    });
   }
 
 
@@ -105,15 +106,14 @@ export class PembayaranComponent implements OnInit {
     if (this.pembayaranForm.valid) {
       this.isSubmitting = true;
 
+      const token = localStorage.getItem('authToken');
+      const headers = { Authorization: `Bearer ${token}` };
       const formData = this.pembayaranForm.value;
       if (!formData.validasi) {
         formData.validasi = 'BELUM'; // Set default jika kosong
       }
 
-      const token = localStorage.getItem('authToken');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      this.http.post(this.apiUrl, this.pembayaranForm.value, { headers }).subscribe({
+      this.http.post(this.apiUrl, formData, { headers }).subscribe({
         next: () => {
           this.getPembayaran();
           this.pembayaranForm.reset();

@@ -3,12 +3,13 @@ import { Component, OnInit, inject } from '@angular/core';  // Mengimpor dekorat
 import { HttpClient } from '@angular/common/http';  // Mengimpor HttpClient untuk melakukan HTTP request
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';  // Tambahkan untuk menangani formulir
 import * as bootstrap from 'bootstrap';
+import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-jadwal',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule, NgxPaginationModule,FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './jadwal.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './jadwal.component.css'  // Path ke file CSS untuk komponen ini
 })
@@ -18,11 +19,13 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
   guru: any[] = [];
   currentPage = 1;
   itemsPerPage = 5;
+  filteredJenisBimbel: any[] = [];
+  searchTerm: string = '';
   apiJadwalUrl = 'https://bimbel-app.vercel.app/api/jadwal';  // URL API yang digunakan untuk mendapatkan data fakultas
   apiJenisbimbelUrl = 'https://bimbel-app.vercel.app/api/jenisBimbel';  // URL API yang digunakan untuk mendapatkan data fakultas
   apiGuruUrl = 'https://bimbel-app.vercel.app/api/guru';  // URL API yang digunakan untuk mendapatkan data guru
   isLoading = true;  // Properti untuk status loading, digunakan untuk menunjukkan loader saat data sedang diambil
-
+  userRole: string |null = null;
   jadwalForm: FormGroup;  // Tambahkan untuk mengelola data formulir
   isSubmitting = false;  // Status untuk mencegah double submit
 
@@ -35,6 +38,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.jadwalForm = this.fb.group({
       hari: [''],
       jam: [''],
+      kelas: ['10'], // Nilai default adalah "10"
       jenisbimbel_id: [null],
       ruangkelas: [''],
       guru_id: [null]
@@ -45,7 +49,15 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.getJadwal();
     this.getJenisbimbel();  // Ambil data jenis bimbel
     this.getGuru();  // Ambil data guru
+    this.getUserRole();
   }
+
+  getUserRole(): void {
+    this.userRole = localStorage.getItem('userRole');
+    console.log('User Role:', this.userRole);
+
+  }
+
 
   getJenisbimbel(): void {
     const token = localStorage.getItem('authToken');
@@ -53,6 +65,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
 
     this.http.get<any[]>(this.apiJenisbimbelUrl,{headers}).subscribe({ // Melakukan HTTP GET ke API fakultas.
       next: (data) => { // Callback jika request berhasil.
+
         this.jenisbimbel = data; // Menyimpan data fakultas ke variabel.
       },
       error: (err) => { // Callback jika request gagal.
@@ -80,6 +93,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.http.get<any[]>(this.apiJadwalUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.jadwal = data;  // Menyimpan data yang diterima ke dalam properti fakultas
+        this.filteredJenisBimbel = data;
         console.log('Data Jadwal:', this.jadwal);  // Mencetak data fakultas di console untuk debugging
         this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
       },
@@ -89,6 +103,15 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
       },
     });
   }
+  filterJenisBimbel(): void {
+    const searchTermLower = this.searchTerm.toLowerCase(); // Konversi kata pencarian ke huruf kecil
+    this.filteredJenisBimbel = this.jadwal.filter((item) =>
+      item.jenisbimbel_id?.nama.toLowerCase().includes(searchTermLower) || // Filter berdasarkan nama jenis bimbel
+      item.kelas?.toLowerCase().includes(searchTermLower) // Filter berdasarkan kelas
+    );
+  }
+
+
 
   // Method untuk menambahkan fakultas
   addJadwal(): void {
