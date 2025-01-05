@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-pembayaran',  // Nama selector untuk komponen ini. Komponen akan digunakan di template dengan tag <app-fakultas></app-fakultas>
   standalone: true,  // Menyatakan bahwa komponen ini adalah komponen standalone dan tidak membutuhkan module tambahan
-  imports: [CommonModule, ReactiveFormsModule,FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],  // Mengimpor CommonModule untuk memungkinkan penggunaan direktif Angular standar seperti *ngIf dan *ngFor di template
   templateUrl: './pembayaran.component.html',  // Path ke file template HTML untuk komponen ini
   styleUrl: './pembayaran.component.css'  // Path ke file CSS untuk komponen ini
 })
@@ -29,9 +29,11 @@ export class PembayaranComponent implements OnInit {
 
   private fb = inject(FormBuilder);
 
+  currentDate: string = new Date().toISOString().split('T')[0];
+
   constructor(private http: HttpClient) {
     this.pembayaranForm = this.fb.group({
-      namaMurid:[''],
+      namaMurid: [''],
       tgl_pembayaran: [''],
       pembayaran_bln: [''],
       jml_transaksi: [''],
@@ -53,42 +55,53 @@ export class PembayaranComponent implements OnInit {
 
   getPembayaran(): void {
     const token = localStorage.getItem('authToken');
-    const headers = { Authorization: `Bearer ${token}` };
-      this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
-        next: (data) => {
-          this.pembayaran = data.map((item) => ({
-            ...item,
-
-            validasi: item.validasi || null, // Set nilai validasi default
-
-          }));
-          this.filteredPembayaran = data;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching pembayaran data (admin):', err);
-          this.isLoading = false;
-        },
-      });
+    if (!token) {
+      this.errorMessage = 'Token tidak ditemukan';
+      this.isLoading = false;
+      return;
     }
 
-  filterPembayaran(): void {
-    this.filteredPembayaran = this.pembayaran.filter((item) => {
-      const namaMurid = item.namaMurid || ''; // Pastikan nilai default adalah string kosong
-      return namaMurid.toLowerCase().includes(this.searchTerm.toLowerCase());
+    const headers = { Authorization: `Bearer ${token}` };
+    this.isLoading = true;
+
+    this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
+      next: (data) => {
+        this.pembayaran = data.map((item) => ({
+          ...item,
+          validasi: item.validasi || 'BELUM',
+        }));
+        this.filteredPembayaran = [...this.pembayaran];
+      },
+      error: (err) => {
+        console.error('Error fetching pembayaran:', err);
+        this.errorMessage = 'Gagal mengambil data pembayaran';
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
     });
   }
 
+  filterPembayaran(): void {
+    const searchTermLower = this.searchTerm.toLowerCase().trim();
+    this.filteredPembayaran = this.pembayaran.filter((item) => {
+      if (!item.pembayaran_bln) return false;
+      return item.pembayaran_bln.toLowerCase().includes(searchTermLower);
+    });
+  }
 
   getPembayaranById(_id: string): void {
     this.editPembayaranId = _id;
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}` };
-    this.http.get(`${this.apiUrl}/${_id}`,{headers}).subscribe({
+    this.http.get(`${this.apiUrl}/${_id}`, { headers }).subscribe({
       next: (data: any) => {
+        // Format tanggal ke YYYY-MM-DD untuk input type date
+        const formattedDate = data.tgl_pembayaran ? new Date(data.tgl_pembayaran).toISOString().split('T')[0] : '';
+
         this.pembayaranForm.patchValue({
           namaMurid: data.namaMurid || '',
-          tgl_pembayaran: data.tgl_pembayaran || '',
+          tgl_pembayaran: formattedDate,
           pembayaran_bln: data.pembayaran_bln || '',
           jml_transaksi: data.jml_transaksi || '',
           no_rek: data.no_rek || '',
@@ -110,20 +123,30 @@ export class PembayaranComponent implements OnInit {
       const headers = { Authorization: `Bearer ${token}` };
       const formData = this.pembayaranForm.value;
       if (!formData.validasi) {
-        formData.validasi = 'BELUM'; // Set default jika kosong
+        formData.validasi = 'BELUM';
       }
 
       this.http.post(this.apiUrl, formData, { headers }).subscribe({
         next: () => {
-          this.getPembayaran();
+          // Reset semua state
           this.pembayaranForm.reset();
-          this.closeModal('tambahPembayaranModal');
           this.isSubmitting = false;
+          this.closeModal('tambahPembayaranModal');
+          // Tambahkan timeout untuk memastikan UI ter-update
+          setTimeout(() => {
+            this.getPembayaran();
+          }, 100);
         },
         error: (err) => {
           console.error('Error adding pembayaran:', err);
           this.isSubmitting = false;
+          // Tambahkan error handling UI
+          alert('Terjadi kesalahan saat menambahkan pembayaran');
         },
+        complete: () => {
+          // Pastikan isSubmitting selalu false di akhir
+          this.isSubmitting = false;
+        }
       });
     }
   }
@@ -155,11 +178,27 @@ export class PembayaranComponent implements OnInit {
   closeModal(modalId: string): void {
     const modalElement = document.getElementById(modalId) as HTMLElement;
     if (modalElement) {
-      const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-      modalInstance.hide();
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
       if (modalInstance) {
-        modalInstance.hide(); // Menutup modal
+        modalInstance.hide();
       }
     }
+    // Tambahkan untuk membersihkan modal backdrop
+    document.body.classList.remove('modal-open');
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    if (modalBackdrop) {
+      modalBackdrop.remove();
+    }
+  }
+
+  formatDate(date: string): string {
+    if (!date) return '-';
+    const d = new Date(date);
+    return d.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   }
 }
+
