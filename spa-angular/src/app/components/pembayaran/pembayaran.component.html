@@ -63,8 +63,8 @@
             <td *ngIf="userRole === 'admin'">
               <select id="validasi" class="form-select" formControlName="validasi">
                 <option [value]="null">-</option>
-                <option value="Y">YA</option>
-                <option value="T">TIDAK</option>
+                <option value="Y">Valid</option>
+                <option value="T">Tidak Valid</option>
               </select>
             </td>
             <div class="modal" id="tambahPembayaranModal" tabindex="-1" data-bs-backdrop="static"
@@ -126,8 +126,8 @@
             <td *ngIf="userRole === 'admin'">
               <select id="validasi" class="form-select" formControlName="validasi">
                 <option [value]="null">-</option>
-                <option value="Y">YA</option>
-                <option value="T">TIDAK</option>
+                <option value="Y">Valid</option>
+                <option value="T">Tidak Valid</option>
               </select>
             </td>
             <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
@@ -148,8 +148,8 @@
         <th>Pembayaran Bulan</th>
         <th>Jumlah Transaksi</th>
         <th>No Rekening</th>
-        <th>Validasi</th>
-        <th *ngIf="userRole === 'admin'">Hasil Validasi</th>
+        <th>Hasil Validasi</th>
+        <th *ngIf="userRole === 'admin'">Validasi</th>
       </tr>
     </thead>
     <tbody>
@@ -159,9 +159,6 @@
         <td>{{ item.pembayaran_bln }}</td>
         <td>{{ item.jml_transaksi }}</td>
         <td>{{ item.no_rek }}</td>
-        <td *ngIf="userRole !== 'admin'">
-          {{ item.validasi === 'Y' ? 'YA' : item.validasi === 'T' ? 'TIDAK' : '' }}
-        </td>
         <td *ngIf="userRole === 'admin'">
           <!-- Menampilkan hasil validasi -->
           {{ item.validasi === 'Y' ? 'Valid' : item.validasi === 'T' ? 'Tidak Valid' : 'Belum Divalidasi' }}
