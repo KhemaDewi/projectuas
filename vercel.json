@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/spa-angular/browser/**",
+      "src": "dist/projectuas/browser/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/dist/spa-angular/browser/$1"
+      "dest": "/dist/projectuas/browser/$1"
     }
   ]
 }
