@@ -111,8 +111,6 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     );
   }
 
-
-
   // Method untuk menambahkan fakultas
   addJadwal(): void {
     if (this.jadwalForm.valid) {
@@ -155,8 +153,6 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
       });
     }}
 
-
-
       // Method untuk menghapus data Fakultas
       deleteJadwal(_id: string): void {
         if (confirm('Apakah Anda yakin ingin menghapus Jadwal ini?')) {
@@ -174,6 +170,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
         }
       }
     }
+
 
 
 

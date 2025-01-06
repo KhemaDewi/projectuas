@@ -1,5 +1,6 @@
-<div class="container mt-4">
-  <h2>Pembayaran</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+<div class="container mt-4" style="background: #f9f9f9; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+  <h2 style="text-align: center; color: #4b79a1; font-weight: bold;">Pembayaran</h2>
 
   <!-- Loader -->
   <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
@@ -9,15 +10,17 @@
   </div>
 
   <!-- Tombol untuk membuka modal -->
-  <button *ngIf="userRole === 'user'" type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-    data-bs-target="#tambahPembayaranModal">
-    Upload Bukti Pembayaran
-  </button>
+  <div class="text-center mb-4">
+    <button *ngIf="userRole === 'user'" type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
+      data-bs-target="#tambahPembayaranModal">
+      <i class="bi bi-upload"></i> Validasi Pembayaran
+    </button>
+  </div>
 
   <!-- Input Pencarian dengan Icon -->
   <div class="d-flex justify-content-end mb-3">
-    <div class="input-group" style="width: 200px;">
-      <input type="text" class="form-control" placeholder="Cari Bulan Pembayaran" [(ngModel)]="searchTerm"
+    <div class="input-group" style="width: 250px;">
+      <input type="text" class="form-control" placeholder="Cari Bulan Pembayaran..." [(ngModel)]="searchTerm"
         (input)="filterPembayaran()" />
       <span class="input-group-text">
         <i class="bi bi-search"></i>
@@ -25,15 +28,13 @@
     </div>
   </div>
 
-  <!-- Modal Tambah Fakultas -->
+  <!-- Modal Tambah Pembayaran -->
   <div class="modal fade" id="tambahPembayaranModal" tabindex="-1" aria-labelledby="tambahPembayaranModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="tambahPembayaranModalLabel">
-            Upload Bukti Pembayaran
-          </h5>
+          <h5 class="modal-title text-primary" id="tambahPembayaranModalLabel">Upload Bukti Pembayaran</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -47,7 +48,6 @@
               <input id="tgl_pembayaran" type="date" class="form-control" formControlName="tgl_pembayaran"
                 [max]="currentDate" />
             </div>
-
             <div class="mb-3">
               <label for="pembayaran_bln" class="form-label">Pembayaran Bulan</label>
               <input id="pembayaran_bln" type="text" class="form-control" formControlName="pembayaran_bln" />
@@ -60,30 +60,19 @@
               <label for="no_rek" class="form-label">No Rekening</label>
               <input id="no_rek" type="text" class="form-control" formControlName="no_rek" />
             </div>
-            <td *ngIf="userRole === 'admin'">
+            <div *ngIf="userRole === 'admin'" class="mb-3">
+              <label for="validasi" class="form-label">Validasi</label>
               <select id="validasi" class="form-select" formControlName="validasi">
                 <option [value]="null">-</option>
                 <option value="Y">Valid</option>
                 <option value="T">Tidak Valid</option>
               </select>
-            </td>
-            <div class="modal" id="tambahPembayaranModal" tabindex="-1" data-bs-backdrop="static"
-              data-bs-keyboard="false">
-              <!-- Modal content -->
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="closeModal('tambahPembayaranModal')"
-                  [disabled]="isSubmitting">
-                  Tutup
-                </button>
-                <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || !pembayaranForm.valid">
-                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                </button>
-              </div>
             </div>
-
-            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
-              {{ isSubmitting ? "Menyimpan..." : "Upload Bukti Pembayaran" }}
-            </button>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || !pembayaranForm.valid">
+                {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -139,35 +128,39 @@
     </div>
   </div>
 
-  <!-- Data Fakultas -->
-  <table class="table table-bordered table-striped" *ngIf="!isLoading">
-    <thead>
+  <!-- Tabel Data Pembayaran -->
+  <table class="table table-bordered table-striped">
+    <thead class="table-primary">
       <tr>
         <th>Nama Murid</th>
         <th>Tanggal</th>
         <th>Pembayaran Bulan</th>
         <th>Jumlah Transaksi</th>
         <th>No Rekening</th>
-        <th>Hasil Validasi</th>
-        <th *ngIf="userRole === 'admin'">Validasi</th>
+        <th>Status Validasi</th>
+        <th *ngIf="userRole === 'admin'">Aksi</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of filteredPembayaran">
+      <tr *ngFor="let item of filteredPembayaran"
+        [ngClass]="{ 'table-secondary': item.validasi === 'Y', 'table-danger': item.validasi === 'T' }">
         <td>{{ item.namaMurid }}</td>
         <td>{{ formatDate(item.tgl_pembayaran) }}</td>
         <td>{{ item.pembayaran_bln }}</td>
-        <td>{{ item.jml_transaksi }}</td>
+        <td>Rp {{ item.jml_transaksi }}</td>
         <td>{{ item.no_rek }}</td>
-        <td *ngIf="userRole === 'admin'">
-          <!-- Menampilkan hasil validasi -->
-          {{ item.validasi === 'Y' ? 'Valid' : item.validasi === 'T' ? 'Tidak Valid' : 'Belum Divalidasi' }}
-        </td>
         <td>
-          <!-- Tombol Edit -->
-          <button *ngIf="userRole === 'admin' " type="button" class="btn btn-warning btn-sm me-2"
-            (click)="getPembayaranById(item._id)" title="Ubah Data Pembayaran">
-            Edit
+          <span [ngClass]="{
+            'badge rounded-pill bg-success-subtle text-success border border-success': item.validasi === 'Y',
+            'badge rounded-pill bg-danger-subtle text-danger border border-danger': item.validasi === 'T',
+            'badge rounded-pill bg-primary-subtle text-primary border border-primary': item.validasi === null
+          }">
+            {{ item.validasi === 'Y' ? 'Valid' : item.validasi === 'T' ? 'Tidak Valid' : 'Belum Divalidasi' }}
+          </span>
+        </td>
+        <td *ngIf="userRole === 'admin'">
+          <button type="button" class="btn btn-warning btn-sm" (click)="getPembayaranById(item._id)">
+            <i class="bi bi-pencil-square"></i> Edit
           </button>
         </td>
       </tr>
