@@ -166,7 +166,7 @@
         <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
         <th>Ruang Kelas</th> <!-- Singkatan nama fakultas -->
         <th>Nama Guru</th> <!-- Singkatan nama fakultas -->
-        <th>Aksi</th> <!-- Singkatan nama fakultas -->
+        <th *ngIf="userRole === 'admin'">Aksi</th> <!-- Singkatan nama fakultas -->
       </tr>
     </thead>
     <tbody>
@@ -191,6 +191,7 @@
 
         <td>
           <button
+          *ngIf="userRole === 'admin'"
             type="button"
             class="btn btn-danger btn-sm"
             style="background-color: #dc3545; border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px;"

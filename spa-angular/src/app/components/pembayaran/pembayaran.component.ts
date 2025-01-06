@@ -139,32 +139,26 @@ export class PembayaranComponent implements OnInit {
       const token = localStorage.getItem('authToken');
       const headers = { Authorization: `Bearer ${token}` };
       const formData = this.pembayaranForm.value;
-      if (!formData.validasi) {
-        formData.validasi = 'BELUM';
-      }
+
+      // Debugging tambahan
+      console.log('Form data yang akan dikirim:', formData);
 
       this.http.post(this.apiUrl, formData, { headers }).subscribe({
         next: () => {
-          // Reset semua state
+          console.log('Pembayaran berhasil ditambahkan');
           this.pembayaranForm.reset();
           this.isSubmitting = false;
           this.closeModal('tambahPembayaranModal');
-          // Tambahkan timeout untuk memastikan UI ter-update
-          setTimeout(() => {
-            this.getPembayaran();
-          }, 100);
+          this.getPembayaran();
         },
         error: (err) => {
           console.error('Error adding pembayaran:', err);
+          alert(`Gagal menambahkan pembayaran: ${err.error?.message || 'Kesalahan tidak diketahui'}`);
           this.isSubmitting = false;
-          // Tambahkan error handling UI
-          alert('Terjadi kesalahan saat menambahkan pembayaran');
         },
-        complete: () => {
-          // Pastikan isSubmitting selalu false di akhir
-          this.isSubmitting = false;
-        }
       });
+    } else {
+      alert('Form tidak valid. Pastikan semua data terisi.');
     }
   }
 
