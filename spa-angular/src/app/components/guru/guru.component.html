@@ -146,11 +146,14 @@
               Edit
             </button>
 
-            <!-- Tombol Hapus -->
-            <button type="button" class="btn btn-danger btn-sm" (click)="deleteGuru(item._id)" title="Hapus Guru">
-
-              Hapus
-            </button>
+            <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            style="background-color: #dc3545; border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px;"
+            (click)="deleteGuru(item._id)"
+            title="Hapus Guru">
+            <i class="bi bi-trash"></i> Hapus
+          </button>
           </td>
         </tr>
       </tbody>

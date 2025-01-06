@@ -38,7 +38,7 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
     this.jadwalForm = this.fb.group({
       hari: [''],
       jam: [''],
-      kelas: ['10'], // Nilai default adalah "10"
+      kelas: [''], // Nilai default adalah "10"
       jenisbimbel_id: [null],
       ruangkelas: [''],
       guru_id: [null]
@@ -153,6 +153,27 @@ export class JadwalComponent implements OnInit {  // Deklarasi komponen dengan m
           this.isSubmitting = false;
         },
       });
+    }}
+
+
+
+      // Method untuk menghapus data Fakultas
+      deleteJadwal(_id: string): void {
+        if (confirm('Apakah Anda yakin ingin menghapus Jadwal ini?')) {
+          const token = localStorage.getItem('authToken');
+          const headers = { Authorization: `Bearer ${token}` };
+          this.http.delete(`${this.apiJadwalUrl}/${_id}`,{headers}).subscribe({
+            next: () => {
+              console.log(`Jadwal dengan ID ${_id} berhasil dihapus`);
+              this.getJadwal(); // Refresh data Fakultas setelah penghapusan
+            },
+            error: (err) => {
+              console.error('Error menghapus murid:', err);
+            },
+          });
+        }
+      }
     }
-  }
-}
+
+
+

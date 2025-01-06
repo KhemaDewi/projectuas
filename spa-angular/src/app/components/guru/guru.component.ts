@@ -54,7 +54,8 @@ export class GuruComponent implements OnInit {  // Deklarasi komponen dengan men
     this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.guru = data;  // Menyimpan data yang diterima ke dalam properti fakultas
-        this.filteredGuru= data;
+        this.filteredGuru = this.guru.sort((a, b) => a.nama.localeCompare(b.nama));
+
         console.log('Data Guru:', this.guru);  // Mencetak data fakultas di console untuk debugging
         this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
       },

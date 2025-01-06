@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 <div class="container mt-4" style="background: #f9f9f9; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
   <h2 style="text-align: center; color: #4b79a1; font-weight: bold;">Jadwal Bimbel</h2>
 
@@ -149,6 +150,8 @@
     </div>
   </div>
 
+
+
   <!-- Jika data fakultas tersedia, tampilkan tabel -->
 <div *ngIf="jadwal.length > 0">
   <!-- Membuat tabel untuk menampilkan data fakultas -->
@@ -163,6 +166,7 @@
         <th>Jenis Bimbel</th> <!-- Singkatan nama fakultas -->
         <th>Ruang Kelas</th> <!-- Singkatan nama fakultas -->
         <th>Nama Guru</th> <!-- Singkatan nama fakultas -->
+        <th>Aksi</th> <!-- Singkatan nama fakultas -->
       </tr>
     </thead>
     <tbody>
@@ -185,6 +189,16 @@
         <!-- Menampilkan singkatan fakultas -->
         <td>{{ item.guru_id?.nama }}</td>
 
+        <td>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            style="background-color: #dc3545; border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 14px;"
+            (click)="deleteJadwal(item._id)"
+            title="Hapus Jadwal">
+            <i class="bi bi-trash"></i> Hapus
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

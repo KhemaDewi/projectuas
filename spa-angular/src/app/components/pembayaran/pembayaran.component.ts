@@ -66,11 +66,27 @@ export class PembayaranComponent implements OnInit {
 
     this.http.get<any[]>(this.apiUrl, { headers }).subscribe({
       next: (data) => {
-        this.pembayaran = data.map((item) => ({
-          ...item,
-          validasi: item.validasi || 'BELUM',
-        }));
-        this.filteredPembayaran = [...this.pembayaran];
+        console.log('Data yang diterima:', data); // Periksa struktur data
+
+        // Pastikan setiap item memiliki properti 'nama'
+        if (data && data.length > 0) {
+          this.pembayaran = data.map((item) => ({
+            ...item,
+            validasi: item.validasi || 'BELUM',
+          }));
+
+          // Pastikan properti 'nama' ada sebelum melakukan pengurutan
+          this.filteredPembayaran = [...this.pembayaran].sort((a, b) => {
+            if (a.pembayaran_bln && b.pembayaran_bln) {
+              return a.pembayaran_bln.localeCompare(b.pembayaran_bln);
+            }
+            return 0; // Jika salah satu tidak memiliki 'nama', urutkan tanpa perubahan
+          });
+
+          console.log('Data setelah pengurutan:', this.filteredPembayaran);
+        } else {
+          console.error('Data kosong atau tidak sesuai');
+        }
       },
       error: (err) => {
         console.error('Error fetching pembayaran:', err);
@@ -80,6 +96,7 @@ export class PembayaranComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
   }
 
   filterPembayaran(): void {

@@ -57,7 +57,7 @@ export class MuridComponent implements OnInit {  // Deklarasi komponen dengan me
     this.http.get<any[]>(this.apiUrl,{headers}).subscribe({
       next: (data) => {  // Callback untuk menangani data yang diterima dari API
         this.murid = data;  // Menyimpan data yang diterima ke dalam properti fakultas
-        this.filteredMurid = data;
+        this.filteredMurid = this.murid.sort((a, b) => a.nama.localeCompare(b.nama));
         console.log('Data Murid:', this.murid);  // Mencetak data fakultas di console untuk debugging
         this.isLoading = false;  // Mengubah status loading menjadi false, yang akan menghentikan tampilan loader
       },
