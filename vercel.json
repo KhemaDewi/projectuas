@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/projectuasssss/browser/**",
+      "src": "dist/projectuas/browser/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/dist/projectuasssss/browser/$1"
+      "dest": "/dist/projectuas/browser/$1"
     }
   ]
 }
